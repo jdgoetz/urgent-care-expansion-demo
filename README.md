@@ -210,7 +210,7 @@ Prerequisites: Node.js 20+, npm, Docker Desktop, and Git.
     git clone https://github.com/jdgoetz/urgent-care-expansion-demo.git
     cd urgent-care-expansion-demo
     npm.cmd install
-    docker compose up -d
+    docker compose up -d --wait
     copy .env.example .env.local
     npm.cmd run db:migrate
     npm.cmd run ingest:demo
@@ -243,4 +243,3 @@ Routine report output is ignored. A curated synthetic sample is retained under d
 - [Methodology](docs/methodology.md)
 - [Screenshot guide](docs/screenshots/README.md)
 - [Contributing](CONTRIBUTING.md)
-
