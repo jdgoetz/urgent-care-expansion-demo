@@ -82,6 +82,7 @@ export interface DemoPocket {
   marketType: DemoMarketType;
   centroidLat: number;
   centroidLon: number;
+  displayRadiusMiles: number;
   geometry: Polygon | MultiPolygon;
   metrics: DemoMetric[];
   competitors: DemoCompetitor[];

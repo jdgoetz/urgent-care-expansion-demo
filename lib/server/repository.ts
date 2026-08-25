@@ -32,7 +32,7 @@ export async function listPockets(stateId?: string, metroId?: string): Promise<D
     text: `
       SELECT p.pocket_id, p.pocket_name, p.region_id, r.region_name,
         p.state_id, s.state_name, p.metro_id, m.metro_name, p.zip_code, p.market_type,
-        p.centroid_lat, p.centroid_lon, ST_AsGeoJSON(p.geometry)::json AS geometry,
+        p.centroid_lat, p.centroid_lon, p.display_radius_miles, ST_AsGeoJSON(p.geometry)::json AS geometry,
         p.metrics, p.competitors, p.opportunities, p.scores,
         p.data_completeness, p.source_status, p.methodology_note
       FROM demo_pockets p
@@ -57,6 +57,7 @@ export async function listPockets(stateId?: string, metroId?: string): Promise<D
     marketType: row.market_type,
     centroidLat: Number(row.centroid_lat),
     centroidLon: Number(row.centroid_lon),
+    displayRadiusMiles: Number(row.display_radius_miles),
     geometry: row.geometry,
     metrics: row.metrics,
     competitors: row.competitors,

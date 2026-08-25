@@ -4,6 +4,8 @@
 
 The public demo combines real public observations with simplified illustrative scoring. It does not reproduce production components, weights, thresholds, normalization, or private opportunity evidence methodology.
 
+Official Census ZCTA geometry is retained for public-source lineage, demographic extraction, ZIP routing, and reproducibility. The primary map deliberately renders five-mile circular overlays centered on each canonical ZCTA centroid. These circles are curated market analysis areas, not literal ZIP boundaries, and do not alter any metric or score.
+
 ## Demo Expansion Score
 
 Model identifier: demo_expansion_score_v1.

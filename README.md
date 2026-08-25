@@ -93,6 +93,8 @@ The deterministic seed contains nine real ZIP Code Tabulation Area markets:
 
 The application labels each field as a real public observation, a derived public observation, or an illustrative demo value. It is a curated portfolio, not complete national coverage. No production records or private targets are included.
 
+Public market observations are grounded in official public-source geography and data. The map's circular overlays represent the curated five-mile market analysis areas used for this demonstration rather than literal ZIP-code boundaries. Canonical Census ZCTA geometry remains stored for lineage, demographic analysis, ZIP routing, and reproducibility.
+
 ## Analytics
 
 The public model identifier is demo_expansion_score_v1.
@@ -136,7 +138,8 @@ The primary map:
 - displays all qualifying demo pockets directly
 - filters by real state and metro context
 - defaults to Immediate Review and Strong near-term markets
-- switches color between Near-Term Priority and Expansion Score
+- defaults to prominent blue circular market-analysis areas, with active public listings in violet
+- can explicitly switch to Near-Term Priority or Expansion Score coloring
 - ranks visible pockets beside the map
 - opens a market overview and navigates to full detail
 
@@ -144,9 +147,9 @@ Market detail includes Overview, Competitors, Metrics, Opportunities, and Source
 
 ## Screenshots
 
-### Pocket-first regional map
+### Curated market analysis areas
 
-![Pocket-first map](docs/screenshots/map.png)
+![Blue circular market analysis areas with a violet public listing](docs/screenshots/map.png)
 
 ### Market overview
 
@@ -177,7 +180,7 @@ See [docs/screenshots/README.md](docs/screenshots/README.md) for capture convent
 - Zod validation at the ingestion boundary
 - versioned and testable demo scoring
 - typed Next.js APIs
-- pocket-first Leaflet visualization
+- circle-first Leaflet market visualization with retained PostGIS source geometry
 - TanStack competitor table
 - evidence lineage and confidence
 - deterministic Word reporting

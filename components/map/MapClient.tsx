@@ -2,17 +2,15 @@
 
 import "leaflet/dist/leaflet.css";
 
-import { geoJSON } from "leaflet";
+import { latLng, latLngBounds } from "leaflet";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { GeoJSON, MapContainer, TileLayer, Tooltip, useMap } from "react-leaflet";
-
-import type { FeatureCollection } from "geojson";
+import { Circle, MapContainer, TileLayer, Tooltip, useMap } from "react-leaflet";
 
 import type { DemoPocket } from "@/lib/types";
 
-type ColorMode = "nearTermPriority" | "expansion";
+type ColorMode = "marketArea" | "nearTermPriority" | "expansion";
 
 const NEAR_TERM_COLORS = {
   "Immediate Review": "#136f63",
@@ -30,17 +28,24 @@ const EXPANSION_COLORS = {
 
 const DEFAULT_BUCKETS = ["Immediate Review", "Strong"];
 const ALL_EXPANSION_BUCKETS = ["Top Priority", "Attractive", "Watchlist", "Lower Priority"] as const;
+const MILES_TO_METERS = 1609.344;
+const MARKET_BLUE = "#2463a3";
+const MARKET_BLUE_BORDER = "#174a7a";
 const LISTING_VIOLET = "#6f4aa8";
+const LISTING_VIOLET_BORDER = "#4f2c81";
 
 function FitCuratedBounds({ pockets }: { pockets: DemoPocket[] }) {
   const map = useMap();
   useEffect(() => {
     if (!pockets.length) return;
-    const collection: FeatureCollection = {
-      type: "FeatureCollection",
-      features: pockets.map((pocket) => ({ type: "Feature", properties: {}, geometry: pocket.geometry })),
-    };
-    const bounds = geoJSON(collection).getBounds();
+    const bounds = latLngBounds([]);
+    for (const pocket of pockets) {
+      bounds.extend(
+        latLng(pocket.centroidLat, pocket.centroidLon).toBounds(
+          pocket.displayRadiusMiles * MILES_TO_METERS * 2,
+        ),
+      );
+    }
     map.fitBounds(bounds, { padding: [28, 28], maxZoom: pockets.length <= 3 ? 10 : 8 });
   }, [map, pockets]);
   return null;
@@ -55,7 +60,7 @@ export default function MapClient() {
   const [query, setQuery] = useState("");
   const [zipQuery, setZipQuery] = useState("");
   const [zipMessage, setZipMessage] = useState("");
-  const [colorMode, setColorMode] = useState<ColorMode>("nearTermPriority");
+  const [colorMode, setColorMode] = useState<ColorMode>("marketArea");
   const [nearTermBuckets, setNearTermBuckets] = useState(() => new Set(DEFAULT_BUCKETS));
   const [expansionBuckets, setExpansionBuckets] = useState(() => new Set<string>(ALL_EXPANSION_BUCKETS));
   const [loading, setLoading] = useState(true);
@@ -93,6 +98,11 @@ export default function MapClient() {
   }, [pockets, stateId, metroId, nearTermBuckets, expansionBuckets, query]);
 
   const selected = pockets.find((pocket) => pocket.id === selectedId);
+  const scoreLegend = colorMode === "nearTermPriority"
+    ? Object.entries(NEAR_TERM_COLORS)
+    : colorMode === "expansion"
+      ? Object.entries(EXPANSION_COLORS)
+      : [];
   const toggleBucket = (bucket: string) => {
     setNearTermBuckets((current) => {
       const next = new Set(current);
@@ -183,6 +193,7 @@ export default function MapClient() {
         <div className="filter-group">
           <label>Color map by</label>
           <div className="segmented-control">
+            <button className={colorMode === "marketArea" ? "active" : ""} onClick={() => setColorMode("marketArea")}>Market Areas</button>
             <button className={colorMode === "nearTermPriority" ? "active" : ""} onClick={() => setColorMode("nearTermPriority")}>Demo Near-Term</button>
             <button className={colorMode === "expansion" ? "active" : ""} onClick={() => setColorMode("expansion")}>Demo Expansion</button>
           </div>
@@ -213,8 +224,19 @@ export default function MapClient() {
       <section className="map-stage">
         <div className="map-summary">
           <span><strong>{filtered.length}</strong> visible markets</span>
-          <span><strong>Real public facts</strong> + simplified scores</span>
-          <span className="listing-legend"><i /> Active public listing</span>
+          {colorMode === "marketArea" ? (
+            <>
+              <span className="map-legend-item"><i style={{ background: MARKET_BLUE, borderColor: MARKET_BLUE_BORDER }} /> Curated Market Analysis Area</span>
+              <span className="map-legend-item"><i style={{ background: LISTING_VIOLET, borderColor: LISTING_VIOLET_BORDER }} /> Public Listed Acquisition</span>
+            </>
+          ) : (
+            <>
+              {scoreLegend.map(([label, color]) => (
+                <span className="map-legend-item" key={label}><i style={{ background: color, borderColor: color }} /> {label}</span>
+              ))}
+              <span className="map-legend-item"><i style={{ background: LISTING_VIOLET, borderColor: LISTING_VIOLET_BORDER }} /> Public Listing</span>
+            </>
+          )}
         </div>
         <MapContainer center={[41, -82]} zoom={5} minZoom={4} className="leaflet-map" zoomControl>
           <FitCuratedBounds
@@ -226,29 +248,39 @@ export default function MapClient() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           {filtered.map((pocket) => {
-            const analyticalColor = colorMode === "nearTermPriority"
-              ? NEAR_TERM_COLORS[pocket.scores.nearTermBucket]
-              : EXPANSION_COLORS[pocket.scores.expansionBucket];
+            const analyticalColor = colorMode === "marketArea"
+              ? MARKET_BLUE
+              : colorMode === "nearTermPriority"
+                ? NEAR_TERM_COLORS[pocket.scores.nearTermBucket]
+                : EXPANSION_COLORS[pocket.scores.expansionBucket];
             const activeListing = pocket.opportunities.some((opportunity) => opportunity.activePublicListing);
             const color = activeListing ? LISTING_VIOLET : analyticalColor;
+            const population = pocket.metrics.find((metric) => metric.key === "population");
+            const saturation = pocket.metrics.find((metric) => metric.key === "competitive_saturation");
             return (
-              <GeoJSON
+              <Circle
                 key={pocket.id + colorMode}
-                data={pocket.geometry}
+                center={[pocket.centroidLat, pocket.centroidLon]}
+                radius={pocket.displayRadiusMiles * MILES_TO_METERS}
                 eventHandlers={{ click: () => setSelectedId(pocket.id) }}
-                style={{
-                  color: activeListing ? "#4f2c81" : selectedId === pocket.id ? "#102f44" : "#ffffff",
-                  weight: selectedId === pocket.id || activeListing ? 3 : 1.5,
+                pathOptions={{
+                  color: activeListing ? LISTING_VIOLET_BORDER : selectedId === pocket.id ? "#102f44" : colorMode === "marketArea" ? MARKET_BLUE_BORDER : "#ffffff",
+                  weight: selectedId === pocket.id || activeListing ? 4 : 3,
                   fillColor: color,
-                  fillOpacity: 0.82,
+                  fillOpacity: activeListing ? 0.52 : colorMode === "marketArea" ? 0.4 : 0.58,
                 }}
               >
                 <Tooltip sticky>
-                  <strong>{pocket.name}</strong><br />
-                  Demo Near-Term {pocket.scores.nearTermPriority.toFixed(1)} · Demo Expansion {pocket.scores.expansion.toFixed(1)}
-                  {activeListing && <><br />Active Public Listed Acquisition</>}
+                  <strong>{pocket.name}, {pocket.stateId.toUpperCase()}</strong><br />
+                  {pocket.marketType === "opportunity_driven" && <>Opportunity-Driven Market<br />Provisional Trade Area<br /></>}
+                  {activeListing && <>ACTIVE PUBLIC LISTED ACQUISITION<br /></>}
+                  Curated Market Analysis Area · {pocket.displayRadiusMiles}-mile radius<br />
+                  Demo Near-Term Priority: {pocket.scores.nearTermPriority.toFixed(1)}<br />
+                  Demo Expansion Score: {pocket.scores.expansion.toFixed(1)}<br />
+                  Population: {population?.rawValue.toLocaleString("en-US") ?? "Not available"}<br />
+                  Competitors / 10k: {saturation?.rawValue.toFixed(2) ?? "Not available"}
                 </Tooltip>
-              </GeoJSON>
+              </Circle>
             );
           })}
         </MapContainer>

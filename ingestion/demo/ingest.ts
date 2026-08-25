@@ -16,6 +16,7 @@ const pocketSchema = z.object({
   metroName: z.string(),
   centroidLat: z.number(),
   centroidLon: z.number(),
+  displayRadiusMiles: z.number().positive().max(25),
   zipCode: z.string().length(5),
   marketType: z.enum(["standard", "opportunity_driven", "listed_acquisition", "comparison"]),
   geometry: z.object({ type: z.enum(["Polygon", "MultiPolygon"]), coordinates: z.array(z.unknown()) }),
@@ -58,12 +59,12 @@ async function main() {
       await client.query(`
         INSERT INTO demo_pockets (
           pocket_id, pocket_name, region_id, state_id, metro_id,
-          zip_code, market_type, centroid_lat, centroid_lon, geometry, metrics, competitors,
+          zip_code, market_type, centroid_lat, centroid_lon, display_radius_miles, geometry, metrics, competitors,
           opportunities, scores, data_completeness, source_status, methodology_note, updated_at
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9,
-          ST_SetSRID(ST_GeomFromGeoJSON($10), 4326),
-          $11::jsonb, $12::jsonb, $13::jsonb, $14::jsonb, $15, $16, $17, now()
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+          ST_SetSRID(ST_GeomFromGeoJSON($11), 4326),
+          $12::jsonb, $13::jsonb, $14::jsonb, $15::jsonb, $16, $17, $18, now()
         )
         ON CONFLICT (pocket_id) DO UPDATE SET
           pocket_name=EXCLUDED.pocket_name,
@@ -74,6 +75,7 @@ async function main() {
           market_type=EXCLUDED.market_type,
           centroid_lat=EXCLUDED.centroid_lat,
           centroid_lon=EXCLUDED.centroid_lon,
+          display_radius_miles=EXCLUDED.display_radius_miles,
           geometry=EXCLUDED.geometry,
           metrics=EXCLUDED.metrics,
           competitors=EXCLUDED.competitors,
@@ -85,8 +87,8 @@ async function main() {
           updated_at=now()
       `, [
         pocket.id, pocket.name, pocket.regionId, pocket.stateId, pocket.metroId,
-        pocket.zipCode, pocket.marketType, pocket.centroidLat, pocket.centroidLon, JSON.stringify(pocket.geometry),
-        JSON.stringify(pocket.metrics), JSON.stringify(pocket.competitors),
+        pocket.zipCode, pocket.marketType, pocket.centroidLat, pocket.centroidLon, pocket.displayRadiusMiles,
+        JSON.stringify(pocket.geometry), JSON.stringify(pocket.metrics), JSON.stringify(pocket.competitors),
         JSON.stringify(pocket.opportunities), JSON.stringify(pocket.scores),
         pocket.dataCompleteness, pocket.sourceStatus, pocket.methodologyNote,
       ]);

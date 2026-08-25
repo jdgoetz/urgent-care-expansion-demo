@@ -30,6 +30,7 @@ type MarketSpec = {
   metroId: string;
   metroName: string;
   marketType: DemoMarketType;
+  displayRadiusMiles: number;
   population2024: number;
   population2019: number;
   employmentPct: number;
@@ -94,6 +95,7 @@ const SPECS: MarketSpec[] = [
     metroId: "pa_state_college",
     metroName: "State College",
     marketType: "standard",
+    displayRadiusMiles: 5,
     population2024: 40_774,
     population2019: 45_280,
     employmentPct: 54.7,
@@ -113,6 +115,7 @@ const SPECS: MarketSpec[] = [
     metroId: "pa_philadelphia",
     metroName: "Greater Philadelphia",
     marketType: "opportunity_driven",
+    displayRadiusMiles: 5,
     population2024: 28_194,
     population2019: 26_008,
     employmentPct: 71.4,
@@ -145,6 +148,7 @@ const SPECS: MarketSpec[] = [
     metroId: "il_chicago",
     metroName: "Chicago Northwest Suburbs",
     marketType: "listed_acquisition",
+    displayRadiusMiles: 5,
     population2024: 33_401,
     population2019: 33_373,
     employmentPct: 66.7,
@@ -187,6 +191,7 @@ const SPECS: MarketSpec[] = [
     metroId: "pa_lancaster",
     metroName: "Lancaster",
     marketType: "comparison",
+    displayRadiusMiles: 5,
     population2024: 56_382,
     population2019: 52_552,
     employmentPct: 62,
@@ -207,6 +212,7 @@ const SPECS: MarketSpec[] = [
     metroId: "pa_york",
     metroName: "York",
     marketType: "comparison",
+    displayRadiusMiles: 5,
     population2024: 37_466,
     population2019: 38_078,
     employmentPct: 57.3,
@@ -227,6 +233,7 @@ const SPECS: MarketSpec[] = [
     metroId: "pa_harrisburg",
     metroName: "Greater Harrisburg",
     marketType: "comparison",
+    displayRadiusMiles: 5,
     population2024: 27_364,
     population2019: 24_743,
     employmentPct: 62.1,
@@ -247,6 +254,7 @@ const SPECS: MarketSpec[] = [
     metroId: "pa_erie",
     metroName: "Erie",
     marketType: "comparison",
+    displayRadiusMiles: 5,
     population2024: 28_595,
     population2019: 26_863,
     employmentPct: 59.4,
@@ -266,6 +274,7 @@ const SPECS: MarketSpec[] = [
     metroId: "il_chicago",
     metroName: "Chicago Northwest Suburbs",
     marketType: "comparison",
+    displayRadiusMiles: 5,
     population2024: 13_650,
     population2019: 12_610,
     employmentPct: 71.3,
@@ -285,6 +294,7 @@ const SPECS: MarketSpec[] = [
     metroId: "il_chicago",
     metroName: "Chicago Northwest Suburbs",
     marketType: "comparison",
+    displayRadiusMiles: 5,
     population2024: 51_835,
     population2019: 50_639,
     employmentPct: 65.9,
@@ -394,6 +404,7 @@ export function buildDemoPockets(): DemoPocket[] {
       marketType: spec.marketType,
       centroidLat: Number(feature.properties.CENTLAT),
       centroidLon: Number(feature.properties.CENTLON),
+      displayRadiusMiles: spec.displayRadiusMiles,
       geometry: feature.geometry,
       metrics,
       competitors: spec.competitors,
@@ -409,7 +420,7 @@ export function buildDemoPockets(): DemoPocket[] {
       },
       dataCompleteness: 100,
       sourceStatus: "Real public and derived public observations; opportunity fields labeled by status",
-      methodologyNote: `Real ZCTA geography and public observations are paired with a simplified illustrative decision model. ${TIGER_SOURCE}. Production methodology is intentionally excluded.`,
+      methodologyNote: `Real ZCTA geography and public observations are paired with a simplified illustrative decision model. ${TIGER_SOURCE}. The public map uses a ${spec.displayRadiusMiles}-mile circular overlay to represent the curated market analysis area rather than the literal ZIP boundary. Production methodology is intentionally excluded.`,
     };
   });
 }

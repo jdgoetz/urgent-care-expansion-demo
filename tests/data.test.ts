@@ -14,6 +14,7 @@ describe("curated real-market public portfolio", () => {
     expect(buildDemoPockets()).toEqual(DEMO_POCKETS);
     for (const pocket of DEMO_POCKETS) {
       expect(["Polygon", "MultiPolygon"]).toContain(pocket.geometry.type);
+      expect(pocket.displayRadiusMiles).toBe(5);
       expect(pocket.metrics).toHaveLength(5);
       expect(pocket.competitors.length).toBeGreaterThanOrEqual(2);
       expect(pocket.opportunities.length).toBeGreaterThanOrEqual(1);

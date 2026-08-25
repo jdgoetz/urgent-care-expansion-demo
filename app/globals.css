@@ -76,7 +76,7 @@ select:focus, input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgb
 .compact-buckets legend { grid-column: 1 / -1; }
 .bucket-filter input { width: 15px; height: 15px; margin: 0; }
 .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
-.segmented-control { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #bdcad4; border-radius: 4px; overflow: hidden; }
+.segmented-control { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #bdcad4; border-radius: 4px; overflow: hidden; }
 .segmented-control button { border: 0; background: white; color: #4e6172; padding: 8px; cursor: pointer; font-size: 12px; }
 .segmented-control button + button { border-left: 1px solid #bdcad4; }
 .segmented-control button.active { background: var(--ink); color: white; }
@@ -95,10 +95,10 @@ select:focus, input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgb
 
 .map-stage { position: relative; min-width: 0; background: #dfe6e9; }
 .leaflet-map { height: 100%; width: 100%; background: #dfe6e9; }
-.map-summary { position: absolute; z-index: 500; left: 16px; top: 16px; display: flex; gap: 8px; }
+.map-summary { position: absolute; z-index: 500; left: 16px; top: 16px; display: flex; flex-wrap: wrap; gap: 8px; max-width: calc(100% - 32px); }
 .map-summary span { background: rgba(255,255,255,0.94); border: 1px solid #cbd5dc; box-shadow: 0 4px 14px rgba(23,48,71,0.09); padding: 7px 10px; border-radius: 4px; font-size: 11px; }
-.listing-legend { display: flex; align-items: center; gap: 6px; }
-.listing-legend i { width: 10px; height: 10px; background: var(--violet); border: 2px solid #4f2c81; }
+.map-legend-item { display: flex; align-items: center; gap: 6px; }
+.map-legend-item i { width: 12px; height: 12px; border: 2px solid; border-radius: 50%; }
 .selection-panel { position: absolute; z-index: 600; right: 18px; top: 18px; width: 315px; background: white; border: 1px solid #c5d1d9; box-shadow: var(--shadow); padding: 18px; border-radius: 6px; }
 .selection-panel h2 { margin: 4px 30px 14px 0; font-size: 21px; }
 .close-button { position: absolute; right: 10px; top: 8px; border: 0; background: transparent; color: var(--muted); font-size: 24px; cursor: pointer; width: 32px; height: 32px; }
