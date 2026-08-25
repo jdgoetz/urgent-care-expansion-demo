@@ -2,7 +2,7 @@
 
 ## Important limitation
 
-The public demo uses simplified illustrative scoring. It does not reproduce the production model, production weights, production thresholds, or private opportunity evidence methodology.
+The public demo combines real public observations with simplified illustrative scoring. It does not reproduce production components, weights, thresholds, normalization, or private opportunity evidence methodology.
 
 ## Demo Expansion Score
 
@@ -10,19 +10,19 @@ Model identifier: demo_expansion_score_v1.
 
 Five normalized 0-100 components are combined using public illustrative weights:
 
-| Component | Weight | Direction |
-| --- | ---: | --- |
-| Population / Demand | 25% | Higher is favorable |
-| Population Growth | 20% | Higher is favorable |
-| Competitive Saturation | 25% | Lower raw saturation is favorable |
-| Healthcare Access Gap | 15% | Higher gap is favorable |
-| Employment / Activity | 15% | Higher activity is favorable |
+| Component | Weight | Raw input | Direction |
+| --- | ---: | --- | --- |
+| Population / Demand | 25% | 2024 ACS population | Higher is favorable |
+| Population Growth | 20% | 2019-to-2024 ACS change | Higher is favorable |
+| Competitive Saturation | 25% | Curated competitors per 10,000 | Lower is favorable |
+| Healthcare Access Gap | 15% | ACS uninsured share | Higher gap is favorable |
+| Employment / Activity | 15% | ACS employed share, population 16+ | Higher is favorable |
 
-The synthetic generator supplies transparent deterministic normalization. Missing production-data behavior is outside the scope of this demo.
+Raw values are min-max normalized across the fixed nine-market public comparison universe. Missing values are not silently converted to zero. These comparison mechanics do not reproduce production normalization.
 
 ## Competitor saturation
 
-The raw KPI is competitors per 10,000 synthetic residents. Its demo normalized value already handles lower-is-better directionality.
+The raw KPI is curated competitors per 10,000 ACS residents. Its demo normalized value handles lower-is-better directionality. The public competitor snapshot is deliberately small and is not represented as an exhaustive market census.
 
 | Normalized score | Display |
 | ---: | --- |
@@ -32,18 +32,15 @@ The raw KPI is competitors per 10,000 synthetic residents. Its demo normalized v
 | 20 to less than 40 | - |
 | 0 to less than 20 | -- |
 
-## Illustrative acquisition signals
+## Public and illustrative opportunity paths
 
-| Signal | Demo effect |
-| --- | ---: |
-| Independent operator | +10 |
-| Single site | +10 |
-| Limited hours | +5 |
-| Active listing | +30 |
-| Institutional operator | -20 |
-| Recent acquisition | -15 |
+| Path | Public-demo status |
+| --- | --- |
+| Listed acquisition | Linked factual public listing snapshot |
+| Off-market target | Sanitized illustrative case study |
+| Real estate / de novo | Illustrative scenario unless linked to a public listing |
 
-The approachability demonstration starts from a neutral demo baseline and clamps results to 0-100. These signals are not predictions of seller intent.
+Hoffman Estates contains concise facts from a linked public listing, last verified August 25, 2026. Royersford contains a sanitized off-market case that does not identify a private operator. Real-estate paths are illustrative unless explicitly linked to an active public source. Demo path scores are not predictions of seller intent.
 
 ## Entry Feasibility
 
@@ -52,4 +49,3 @@ Possible paths are listed acquisition, illustrative off-market target, and real 
 ## Near-Term Expansion Priority
 
 Near-Term Expansion Priority is the geometric mean of Demo Expansion Score and Demo Entry Feasibility. This simple public formula penalizes a serious weakness in either dimension and does not reproduce the production combination methodology.
-
