@@ -1,8 +1,8 @@
 # Urgent Care Expansion Intelligence - Public Demo
 
-This repository is a sanitized technical demonstration of a geospatial healthcare expansion intelligence platform. It combines synthetic market fundamentals, competitive saturation, healthcare access conditions, and illustrative entry opportunities to identify markets that are both attractive and actionable.
+This repository is a public portfolio demonstration of a geospatial healthcare expansion intelligence platform. It combines a curated set of real U.S. market geographies and public observations with simplified entry scenarios to identify markets that are both attractive and actionable.
 
-> All locations, organizations, competitors, opportunities, and evidence in this repository are fictional. The analytical models are intentionally simplified and do not reproduce private production logic.
+> The markets and underlying public facts are real. All scores are illustrative demo outputs. Production scoring, private opportunity intelligence, source credentials, and proprietary evidence weighting are intentionally excluded.
 
 ## The Problem
 
@@ -23,7 +23,7 @@ This demo separates those questions:
     + acquisition intelligence
     + executive reporting
 
-The implementation includes a deterministic synthetic ingestion pipeline, PostGIS pocket geometry, typed APIs, a pocket-first interactive map, competitor intelligence, illustrative opportunity evidence, versioned demo scoring, tests, and a sample executive Word report.
+The implementation includes deterministic public-data ingestion, PostGIS ZCTA geometry, typed APIs, a pocket-first interactive map, curated competitor context, clearly labeled opportunity evidence, versioned demo scoring, tests, and a sample executive Word report.
 
 ## Decision Framework
 
@@ -52,7 +52,7 @@ The combined score answers: Where should diligence happen first?
 
 ```mermaid
 flowchart LR
-    A[Synthetic sources] --> B[Ingestion and validation]
+    A[Curated public observations] --> B[Ingestion and validation]
     B --> C[(PostgreSQL + PostGIS)]
     C --> D[Metric materialization]
     D --> E[Demo scoring]
@@ -62,35 +62,38 @@ flowchart LR
     E --> I[Executive report]
 ```
 
-The application defaults to its deterministic in-process dataset for a zero-configuration UI preview. Setting DEMO_DATA_MODE to database routes the same typed API through PostgreSQL/PostGIS after migration and ingestion.
+The application defaults to its deterministic curated dataset for a zero-configuration UI preview. Setting `DEMO_DATA_MODE=database` routes the same typed API through PostgreSQL/PostGIS after migration and ingestion.
 
 ## Data Model
 
 ```mermaid
 flowchart TD
-    R[Demo Northeast Region] --> S1[Northland Demo]
-    R --> S2[Southridge Demo]
-    S1 --> M1[Metro context]
-    S2 --> M2[Metro context]
+    R[Curated Public Demo Markets] --> S1[Pennsylvania]
+    R --> S2[Illinois]
+    S1 --> M1[Real metro context]
+    S2 --> M2[Real metro context]
     M1 --> P1[Market pockets]
     M2 --> P2[Market pockets]
 ```
 
 The hierarchy is Region to State to Metro to Market Pocket. Metros remain useful context and filter dimensions, while the primary map renders pockets directly.
 
-## Synthetic Dataset
+## Curated Public Dataset
 
-The deterministic seed contains:
+The deterministic seed contains nine real ZIP Code Tabulation Area markets:
 
-- 1 fictional region
-- 2 fictional states
-- 5 fictional metros
-- 18 fictional market pockets
-- synthetic demographics, growth, access, activity, and competitor saturation
-- synthetic competitor records with ratings, reviews, weekly hours, categories, and safe example links
-- synthetic listed acquisitions, off-market signals, and medical real-estate paths
+- State College, Royersford/Limerick, Lancaster, East York, North Harrisburg, and South Erie in Pennsylvania
+- Hoffman Estates, Schaumburg, and Arlington Heights in Illinois
+- 2020 Census TIGERweb ZCTA geometry
+- 2024 ACS population, employment, and health-insurance observations
+- 2019-to-2024 ACS population change
+- a small curated public competitor snapshot
+- one real public Hoffman Estates healthcare-practice listing
+- sanitized or illustrative off-market and real-estate scenarios
 
-No production records or external provider responses are included.
+The application labels each field as a real public observation, a derived public observation, or an illustrative demo value. It is a curated portfolio, not complete national coverage. No production records or private targets are included.
+
+Public market observations are grounded in official public-source geography and data. The map's circular overlays represent the curated five-mile market analysis areas used for this demonstration rather than literal ZIP-code boundaries. Canonical Census ZCTA geometry remains stored for lineage, demographic analysis, ZIP routing, and reproducibility.
 
 ## Analytics
 
@@ -104,7 +107,7 @@ The public model identifier is demo_expansion_score_v1.
 | Healthcare Access Gap | 15% |
 | Employment / Activity | 15% |
 
-The public demo uses simplified illustrative scoring and does not reproduce the production model. Full details are in [docs/methodology.md](docs/methodology.md).
+Raw public observations are min-max normalized across the nine curated markets. The public demo remains simplified and does not reproduce production normalization or scoring. Full details are in [docs/methodology.md](docs/methodology.md).
 
 Competitive saturation includes the qualitative display:
 
@@ -118,13 +121,13 @@ Competitive saturation includes the qualitative display:
 
 ## Opportunity Intelligence
 
-The demo models three entry paths:
+The demo presents three entry paths:
 
 - Listed acquisition
-- Illustrative off-market target
+- Sanitized illustrative off-market target
 - Real-estate entry
 
-Signals such as independent operator, single site, limited hours, active listing, institutional ownership, and recent acquisition use obvious demo-only weights. They support evidence-based workflow demonstrations and are not predictions that an owner will sell.
+Hoffman Estates includes a linked public listing snapshot verified August 25, 2026. Royersford uses a sanitized off-market example that does not identify a private target and is not a prediction that an owner will sell.
 
 The entry score is strongest-path oriented with a small breadth bonus. Near-Term Expansion Priority uses a simple geometric combination so a serious weakness in attractiveness or feasibility reduces priority. Neither formula reproduces private production logic.
 
@@ -133,9 +136,10 @@ The entry score is strongest-path oriented with a small breadth bonus. Near-Term
 The primary map:
 
 - displays all qualifying demo pockets directly
-- filters by fictional state and metro
+- filters by real state and metro context
 - defaults to Immediate Review and Strong near-term markets
-- switches color between Near-Term Priority and Expansion Score
+- defaults to prominent blue circular market-analysis areas, with active public listings in violet
+- can explicitly switch to Near-Term Priority or Expansion Score coloring
 - ranks visible pockets beside the map
 - opens a market overview and navigates to full detail
 
@@ -143,9 +147,9 @@ Market detail includes Overview, Competitors, Metrics, Opportunities, and Source
 
 ## Screenshots
 
-### Pocket-first regional map
+### Curated market analysis areas
 
-![Pocket-first map](docs/screenshots/map.png)
+![Blue circular market analysis areas with a violet public listing](docs/screenshots/map.png)
 
 ### Market overview
 
@@ -163,7 +167,7 @@ Market detail includes Overview, Competitors, Metrics, Opportunities, and Source
 
 ![Metrics and scoring](docs/screenshots/metrics.png)
 
-### Synthetic executive report
+### Curated public executive report
 
 ![Sample Word report](docs/screenshots/report.png)
 
@@ -172,11 +176,11 @@ See [docs/screenshots/README.md](docs/screenshots/README.md) for capture convent
 ## Engineering Highlights
 
 - PostGIS geometry storage and spatial indexing
-- deterministic, idempotent synthetic ingestion
+- deterministic, idempotent curated-data ingestion
 - Zod validation at the ingestion boundary
 - versioned and testable demo scoring
 - typed Next.js APIs
-- pocket-first Leaflet visualization
+- circle-first Leaflet market visualization with retained PostGIS source geometry
 - TanStack competitor table
 - evidence lineage and confidence
 - deterministic Word reporting
@@ -191,7 +195,7 @@ The private production repository contains real ingestion, full scoring, opportu
 
 ### Layer 2 - Public technical demo
 
-This repository contains synthetic data, simplified scoring, generic interfaces, PostGIS, Next.js, interactive market exploration, tests, and a synthetic report.
+This repository contains curated public observations, simplified scoring, generic interfaces, PostGIS, Next.js, interactive market exploration, tests, and a public-demo report.
 
 ### Layer 3 - Public case study
 
@@ -199,7 +203,7 @@ This README and the docs directory explain the business problem, architecture, a
 
 ## Repository Boundaries
 
-> This repository is a sanitized technical demonstration. It uses synthetic data and simplified analytical models. Production datasets, targets, credentials, scoring weights, opportunity-search strategies, and proprietary decision logic are intentionally excluded.
+> This repository is a sanitized technical demonstration. It uses real public facts with simplified analytical models. Production datasets, private targets, credentials, scoring weights, opportunity-search strategies, and proprietary decision logic are intentionally excluded.
 
 The demo is public for portfolio visibility. No open-source license is granted.
 
@@ -218,7 +222,7 @@ Prerequisites: Node.js 20+, npm, Docker Desktop, and Git.
 
 Open http://localhost:3000/map.
 
-For a UI-only preview without PostgreSQL, omit .env.local and run npm.cmd run dev. The typed API will use the same deterministic synthetic dataset in memory.
+For a UI-only preview without PostgreSQL, omit `.env.local` and run `npm.cmd run dev`. The typed API will use the same deterministic curated dataset in memory.
 
 ## Tests
 
@@ -228,14 +232,14 @@ For a UI-only preview without PostgreSQL, omit .env.local and run npm.cmd run de
 
 Run db:check after starting PostGIS, applying migrations, and ingesting demo data.
 
-## Synthetic Word Report
+## Curated Public Word Report
 
 Install the optional Python report dependency and generate the sample:
 
     python -m pip install -r reporting/requirements.txt
     python reporting/generate_demo_report.py
 
-Routine report output is ignored. A curated synthetic sample is retained under docs/sample for this case study.
+Routine report output is ignored. A curated public sample is retained under `docs/sample` for this case study.
 
 ## Documentation
 
