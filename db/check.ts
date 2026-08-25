@@ -11,10 +11,10 @@ async function main() {
       (SELECT count(*)::int FROM demo_pockets WHERE NOT ST_IsValid(geometry)) AS invalid_geometries
   `);
   const row = counts.rows[0];
-  if (row.regions !== 1 || row.states !== 2 || row.metros !== 5 || row.pockets !== 18) {
+  if (row.regions !== 1 || row.states !== 2 || row.metros !== 7 || row.pockets !== 9) {
     throw new Error("Unexpected deterministic demo counts: " + JSON.stringify(row));
   }
-  if (row.invalid_geometries !== 0) throw new Error("Invalid synthetic pocket geometries found");
+  if (row.invalid_geometries !== 0) throw new Error("Invalid public-market geometries found");
   console.log(JSON.stringify({ postgis: postgis.rows[0].version, ...row }, null, 2));
 }
 
@@ -25,4 +25,3 @@ main()
     await closePool();
     process.exitCode = 1;
   });
-

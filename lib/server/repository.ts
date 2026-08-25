@@ -1,4 +1,4 @@
-import { DEMO_POCKETS } from "@/data/synthetic/demo-data";
+import { DEMO_POCKETS } from "@/data/public/curated-markets";
 import type { DemoPocket } from "@/lib/types";
 
 import { getPool } from "./db";
@@ -31,10 +31,10 @@ export async function listPockets(stateId?: string, metroId?: string): Promise<D
   const result = await getPool().query({
     text: `
       SELECT p.pocket_id, p.pocket_name, p.region_id, r.region_name,
-        p.state_id, s.state_name, p.metro_id, m.metro_name,
+        p.state_id, s.state_name, p.metro_id, m.metro_name, p.zip_code, p.market_type,
         p.centroid_lat, p.centroid_lon, ST_AsGeoJSON(p.geometry)::json AS geometry,
         p.metrics, p.competitors, p.opportunities, p.scores,
-        p.source_status, p.methodology_note
+        p.data_completeness, p.source_status, p.methodology_note
       FROM demo_pockets p
       JOIN demo_regions r ON r.region_id=p.region_id
       JOIN demo_states s ON s.state_id=p.state_id
@@ -53,6 +53,8 @@ export async function listPockets(stateId?: string, metroId?: string): Promise<D
     stateName: row.state_name,
     metroId: row.metro_id,
     metroName: row.metro_name,
+    zipCode: row.zip_code,
+    marketType: row.market_type,
     centroidLat: Number(row.centroid_lat),
     centroidLon: Number(row.centroid_lon),
     geometry: row.geometry,
@@ -60,6 +62,7 @@ export async function listPockets(stateId?: string, metroId?: string): Promise<D
     competitors: row.competitors,
     opportunities: row.opportunities,
     scores: row.scores,
+    dataCompleteness: Number(row.data_completeness),
     sourceStatus: row.source_status,
     methodologyNote: row.methodology_note,
   }));
@@ -69,4 +72,3 @@ export async function getPocket(pocketId: string) {
   const pockets = await listPockets();
   return pockets.find((pocket) => pocket.id === pocketId) ?? null;
 }
-
