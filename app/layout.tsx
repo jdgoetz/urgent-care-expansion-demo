@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Urgent Care Expansion Intelligence Demo",
-  description: "Synthetic geospatial healthcare expansion intelligence demonstration.",
+  description: "Curated real-market healthcare expansion intelligence demonstration with simplified public scoring.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -19,11 +19,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <small>Public technical demo</small>
             </span>
           </a>
-          <span className="demo-badge">Synthetic data</span>
+          <span className="demo-badge">Real public markets · Demo scores</span>
         </header>
         {children}
       </body>
     </html>
   );
 }
-
