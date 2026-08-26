@@ -33,7 +33,10 @@ type MarketSpec = {
   displayRadiusMiles: number;
   population2024: number;
   population2019: number;
-  employmentPct: number;
+  competitorStrengthIndex: number;
+  availabilityGapPct: number;
+  workforceGrowthPct: number;
+  industrialLogisticsPct: number;
   uninsuredPct: number;
   competitors: DemoCompetitor[];
   opportunities: DemoOpportunity[];
@@ -68,6 +71,17 @@ function competitor(
     sourceNote: weeklyHours
       ? `Public operator location page; hours verified ${VERIFIED_AT}. Ratings and review counts are not stored.`
       : `Public operator or location page; identity verified ${VERIFIED_AT}. Ratings, reviews, and unverified hours are not stored.`,
+    physicalFacilityId: id,
+    strictUrgentCare: true,
+    sourceAliases: [],
+  };
+}
+
+function unavailableTraffic(note = "No defensible precise public site location is asserted for this demo scenario.") {
+  return {
+    status: "precise_location_unavailable" as const,
+    observationKind: "illustrative_demo_value" as const,
+    note,
   };
 }
 
@@ -82,6 +96,8 @@ function illustrativePath(id: string, title: string, pathScore: number): DemoOpp
     evidence: ["Public market fundamentals support a de novo diligence example", "No active property is asserted"],
     source: "Illustrative demo scenario",
     disclosure: "This path is illustrative and does not represent an active property listing.",
+    observationKind: "illustrative_demo_value",
+    siteTraffic: unavailableTraffic(),
   };
 }
 
@@ -98,7 +114,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 40_774,
     population2019: 45_280,
-    employmentPct: 54.7,
+    competitorStrengthIndex: 62,
+    availabilityGapPct: 38,
+    workforceGrowthPct: 3.2,
+    industrialLogisticsPct: 7.5,
     uninsuredPct: 3.2,
     competitors: [
       competitor("state_college_geisinger", "Geisinger ConvenientCare State College", "State College, PA", "Health-system urgent care", "https://www.geisinger.org/locations/find-a-location/geisinger-convenientcare-state-college", 75),
@@ -118,7 +137,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 28_194,
     population2019: 26_008,
-    employmentPct: 71.4,
+    competitorStrengthIndex: 55,
+    availabilityGapPct: 45,
+    workforceGrowthPct: 4.6,
+    industrialLogisticsPct: 18,
     uninsuredPct: 2.3,
     competitors: [
       competitor("royersford_tower", "Tower Health Urgent Care - Limerick", "Limerick, PA", "Health-system urgent care", "https://towerhealth.org/locations/tower-health-urgent-care-limerick", 84),
@@ -135,6 +157,21 @@ const SPECS: MarketSpec[] = [
         evidence: ["Independent local-operator example", "Limited-location footprint example", "Public facts intentionally generalized"],
         source: "Sanitized illustrative case study",
         disclosure: "Off-market information in this public demo is sanitized and is not a prediction that an owner will sell.",
+        observationKind: "illustrative_demo_value",
+        siteTraffic: unavailableTraffic(),
+      },
+      {
+        id: "royersford_illustrative_occupational",
+        kind: "occupational_medicine_target",
+        title: "Illustrative Occupational Health Target",
+        status: "sanitized case study",
+        pathScore: 55,
+        confidence: "Low",
+        evidence: ["Illustrative standalone occupational-health facility", "Not included in urgent-care competitor saturation"],
+        source: "Illustrative demo scenario",
+        disclosure: "This synthetic target demonstrates target-type separation and does not identify a real business or seller.",
+        observationKind: "illustrative_demo_value",
+        siteTraffic: unavailableTraffic(),
       },
       illustrativePath("royersford_denovo", "Illustrative medical-office conversion path", 64),
     ],
@@ -151,7 +188,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 33_401,
     population2019: 33_373,
-    employmentPct: 66.7,
+    competitorStrengthIndex: 70,
+    availabilityGapPct: 30,
+    workforceGrowthPct: 2.8,
+    industrialLogisticsPct: 12,
     uninsuredPct: 10.8,
     competitors: [
       competitor("hoffman_physicians_immediate", "Physicians Immediate Care", "Hoffman Estates, IL", "Urgent care", "https://physiciansimmediatecare.com/"),
@@ -178,6 +218,8 @@ const SPECS: MarketSpec[] = [
           "Real estate": "Not disclosed",
         },
         disclosure: `Public listing snapshot - verified ${VERIFIED_AT}. Availability and terms may subsequently change.`,
+        observationKind: "real_public_observation",
+        siteTraffic: unavailableTraffic("The public listing does not disclose a defensible precise site location; a market centroid is not substituted."),
       },
       illustrativePath("hoffman_denovo", "Illustrative medical-office alternative", 58),
     ],
@@ -194,7 +236,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 56_382,
     population2019: 52_552,
-    employmentPct: 62,
+    competitorStrengthIndex: 72,
+    availabilityGapPct: 25,
+    workforceGrowthPct: 3.7,
+    industrialLogisticsPct: 22,
     uninsuredPct: 3.7,
     competitors: [
       competitor("lancaster_patient_first", "Patient First - Lancaster", "Lancaster, PA", "Urgent care", "https://www.patientfirst.com/locations/central-pa/lancaster"),
@@ -215,12 +260,14 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 37_466,
     population2019: 38_078,
-    employmentPct: 57.3,
+    competitorStrengthIndex: 60,
+    availabilityGapPct: 40,
+    workforceGrowthPct: 2.1,
+    industrialLogisticsPct: 25,
     uninsuredPct: 4.1,
     competitors: [
       competitor("york_patient_first", "Patient First - East York", "York, PA", "Urgent care", "https://www.patientfirst.com/locations/central-pa/east-york"),
       competitor("york_wellspan", "WellSpan Urgent Care", "York, PA", "Health-system urgent care", "https://www.wellspan.org/"),
-      competitor("york_oss", "OSS Health Urgent Care", "York, PA", "Orthopedic urgent care", "https://osshealth.com/"),
     ],
     opportunities: [illustrativePath("york_denovo", "Illustrative site-screening path", 48)],
   },
@@ -236,7 +283,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 27_364,
     population2019: 24_743,
-    employmentPct: 62.1,
+    competitorStrengthIndex: 75,
+    availabilityGapPct: 20,
+    workforceGrowthPct: 3,
+    industrialLogisticsPct: 16,
     uninsuredPct: 6.2,
     competitors: [
       competitor("harrisburg_patient_first", "Patient First - Colonial Park", "Harrisburg, PA", "Urgent care", "https://www.patientfirst.com/locations/central-pa/colonial-park"),
@@ -257,7 +307,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 28_595,
     population2019: 26_863,
-    employmentPct: 59.4,
+    competitorStrengthIndex: 58,
+    availabilityGapPct: 42,
+    workforceGrowthPct: 1.5,
+    industrialLogisticsPct: 20,
     uninsuredPct: 3.1,
     competitors: [
       competitor("erie_medexpress", "MedExpress Urgent Care - Erie", "Erie, PA", "Urgent care", "https://www.medexpress.com/"),
@@ -277,7 +330,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 13_650,
     population2019: 12_610,
-    employmentPct: 71.3,
+    competitorStrengthIndex: 68,
+    availabilityGapPct: 34,
+    workforceGrowthPct: 2.5,
+    industrialLogisticsPct: 14,
     uninsuredPct: 5.3,
     competitors: [
       competitor("schaumburg_physicians", "Physicians Immediate Care", "Schaumburg, IL", "Urgent care", "https://physiciansimmediatecare.com/"),
@@ -297,7 +353,10 @@ const SPECS: MarketSpec[] = [
     displayRadiusMiles: 5,
     population2024: 51_835,
     population2019: 50_639,
-    employmentPct: 65.9,
+    competitorStrengthIndex: 72,
+    availabilityGapPct: 28,
+    workforceGrowthPct: 2.7,
+    industrialLogisticsPct: 12,
     uninsuredPct: 4.7,
     competitors: [
       competitor("arlington_nch", "NCH Immediate Care", "Arlington Heights, IL", "Health-system immediate care", "https://www.nch.org/"),
@@ -325,9 +384,12 @@ function competitorsPer10k(spec: MarketSpec) {
 const rawByKey: Record<DemoMetricKey, (spec: MarketSpec) => number> = {
   population: (spec) => spec.population2024,
   population_growth: growthPct,
-  competitive_saturation: competitorsPer10k,
-  healthcare_access_gap: (spec) => spec.uninsuredPct,
-  employment_activity: (spec) => spec.employmentPct,
+  competitors_per_10000_population: competitorsPer10k,
+  competitor_strength: (spec) => spec.competitorStrengthIndex,
+  competitive_availability_gap: (spec) => spec.availabilityGapPct,
+  clinical_workforce_growth: (spec) => spec.workforceGrowthPct,
+  occupational_medicine_potential: (spec) => spec.industrialLogisticsPct,
+  primary_care_underserved: (spec) => spec.uninsuredPct,
 };
 
 const ranges = Object.fromEntries(
@@ -340,7 +402,9 @@ const ranges = Object.fromEntries(
 function normalizedScore(key: DemoMetricKey, value: number) {
   const { min, max } = ranges[key];
   const position = max === min ? 0.5 : (value - min) / (max - min);
-  const directed = key === "competitive_saturation" ? 1 - position : position;
+  const directed = ["competitors_per_10000_population", "competitor_strength"].includes(key)
+    ? 1 - position
+    : position;
   return round(Math.max(0, Math.min(100, directed * 100)));
 }
 
@@ -354,12 +418,16 @@ function metricsFor(spec: MarketSpec): DemoMetric[] {
     sourceUrl: string;
     vintage: string;
     kind: DemoMetric["observationKind"];
+    explanation: string;
   }> = [
-    { key: "population", label: "Population / Demand", unit: "people", source: CENSUS_2024, sourceUrl: populationUrl, vintage: "2024 ACS 5-year", kind: "real_public_observation" },
-    { key: "population_growth", label: "Population Growth", unit: "% change, 2019-2024", source: `${CENSUS_2019} and ${CENSUS_2024}`, sourceUrl: populationUrl, vintage: "2019 and 2024 ACS 5-year", kind: "derived_public_observation" },
-    { key: "competitive_saturation", label: "Competitive Saturation", unit: "curated competitors per 10k", source: "Derived from curated public competitor snapshot and ACS population", sourceUrl: populationUrl, vintage: `Competitors verified ${VERIFIED_AT}; population 2024`, kind: "derived_public_observation" },
-    { key: "healthcare_access_gap", label: "Healthcare Access Gap", unit: "% uninsured", source: `${CENSUS_2024}, table B27010`, sourceUrl: `https://data.census.gov/table/ACSDT5Y2024.B27010?g=860XX00US${spec.zipCode}`, vintage: "2024 ACS 5-year", kind: "derived_public_observation" },
-    { key: "employment_activity", label: "Employment / Activity", unit: "% employed, population 16+", source: `${CENSUS_2024}, table B23025`, sourceUrl: `https://data.census.gov/table/ACSDT5Y2024.B23025?g=860XX00US${spec.zipCode}`, vintage: "2024 ACS 5-year", kind: "derived_public_observation" },
+    { key: "population", label: "Population", unit: "people", source: CENSUS_2024, sourceUrl: populationUrl, vintage: "2024 ACS 5-year", kind: "real_public_observation", explanation: "Larger markets provide greater absolute demand potential." },
+    { key: "population_growth", label: "Population Growth", unit: "% change, 2019-2024", source: `${CENSUS_2019} and ${CENSUS_2024}`, sourceUrl: populationUrl, vintage: "2019 and 2024 ACS 5-year", kind: "derived_public_observation", explanation: "Faster growth indicates expanding future demand." },
+    { key: "competitors_per_10000_population", label: "Competitors / 10k Population", unit: "physical competitors per 10k", source: "Derived from curated public physical-facility snapshot and ACS population", sourceUrl: populationUrl, vintage: `Facilities verified ${VERIFIED_AT}; population 2024`, kind: "derived_public_observation", explanation: "Measures urgent-care supply relative to population; lower saturation is more favorable." },
+    { key: "competitor_strength", label: "Competitor Strength", unit: "illustrative index", source: "Illustrative public-demo competitor composite", sourceUrl: "", vintage: "Demo v2", kind: "illustrative_demo_value", explanation: "Combines public ratings and log-adjusted review volume conceptually to approximate competitive entrenchment." },
+    { key: "competitive_availability_gap", label: "Competitive Availability Gap", unit: "% of standard hours", source: "Illustrative public-demo schedule coverage", sourceUrl: "", vintage: "Demo v2", kind: "illustrative_demo_value", explanation: "Estimates standard urgent-care hours when relatively few competitors are open." },
+    { key: "clinical_workforce_growth", label: "Clinical Workforce Growth", unit: "% illustrative change", source: "Illustrative public-demo workforce trend", sourceUrl: "", vintage: "Demo v2", kind: "illustrative_demo_value", explanation: "Indicates whether the local clinician ecosystem appears to be expanding." },
+    { key: "occupational_medicine_potential", label: "Occupational Medicine Potential", unit: "% illustrative industrial/logistics share", source: "Illustrative public-demo employment composition", sourceUrl: "", vintage: "Demo v2", kind: "illustrative_demo_value", explanation: "Uses employment composition to approximate employer-health and occupational-care demand." },
+    { key: "primary_care_underserved", label: "Primary-Care Underserved", unit: "% uninsured access proxy", source: `${CENSUS_2024}, table B27010`, sourceUrl: `https://data.census.gov/table/ACSDT5Y2024.B27010?g=860XX00US${spec.zipCode}`, vintage: "2024 ACS 5-year", kind: "derived_public_observation", explanation: "Represents a simplified public access-gap proxy that may support demand for convenient care." },
   ];
 
   return definitions.map((definition) => {
@@ -378,6 +446,7 @@ function metricsFor(spec: MarketSpec): DemoMetric[] {
       sourceUrl: definition.sourceUrl,
       vintage: definition.vintage,
       observationKind: definition.kind,
+      explanation: definition.explanation,
     };
   });
 }
@@ -387,10 +456,12 @@ export function buildDemoPockets(): DemoPocket[] {
     const feature = geometryByZip.get(spec.zipCode);
     if (!feature) throw new Error(`Missing TIGERweb geometry for ZCTA ${spec.zipCode}`);
     const metrics = metricsFor(spec);
-    const expansion = scoreExpansion(metrics);
+    const expansionResult = scoreExpansion(metrics);
+    if (expansionResult.score === null) throw new Error(`Demo v2 score is unavailable for ${spec.id}`);
+    const expansion = expansionResult.score;
     const entryFeasibility = scoreEntryFeasibility(spec.opportunities.map((item) => item.pathScore));
     const nearTermPriority = scoreNearTermPriority(expansion, entryFeasibility);
-    const saturation = metrics.find((metric) => metric.key === "competitive_saturation")?.normalizedScore ?? 0;
+    const saturation = metrics.find((metric) => metric.key === "competitors_per_10000_population")?.normalizedScore ?? 0;
     return {
       id: spec.id,
       name: spec.name,
@@ -417,10 +488,13 @@ export function buildDemoPockets(): DemoPocket[] {
         nearTermPriority,
         nearTermBucket: nearTermBucket(nearTermPriority),
         saturationSignal: saturationSignal(saturation),
+        expansionModelId: "demo_expansion_score_v2",
+        nearTermModelId: "demo_near_term_priority_v2",
+        expansionStatus: expansionResult.status,
       },
-      dataCompleteness: 100,
+      dataCompleteness: expansionResult.completenessPct,
       sourceStatus: "Real public and derived public observations; opportunity fields labeled by status",
-      methodologyNote: `Real ZCTA geography and public observations are paired with a simplified illustrative decision model. ${TIGER_SOURCE}. The public map uses a ${spec.displayRadiusMiles}-mile circular overlay to represent the curated market analysis area rather than the literal ZIP boundary. Production methodology is intentionally excluded.`,
+      methodologyNote: `Real ZCTA geography and labeled public or illustrative observations are paired with demo_expansion_score_v2. ${TIGER_SOURCE}. The public map uses a ${spec.displayRadiusMiles}-mile circular analysis area rather than the literal ZIP boundary. Production normalization, weights, thresholds, rankings, and opportunity intelligence are intentionally excluded.`,
     };
   });
 }

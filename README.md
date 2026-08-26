@@ -53,13 +53,16 @@ The combined score answers: Where should diligence happen first?
 ```mermaid
 flowchart LR
     A[Curated public observations] --> B[Ingestion and validation]
-    B --> C[(PostgreSQL + PostGIS)]
-    C --> D[Metric materialization]
-    D --> E[Demo scoring]
-    E --> F[Typed API layer]
-    F --> G[Interactive map]
-    F --> H[Market detail]
-    E --> I[Executive report]
+    B --> C[Physical-facility normalization]
+    C --> D[(PostgreSQL + PostGIS)]
+    D --> E[Market metric materialization]
+    E --> F[Demo scoring]
+    F --> G[Sanitized opportunity paths]
+    G --> H[Entry feasibility and near-term priority]
+    F --> I[Typed API and interactive UI]
+    H --> I
+    H --> J[Executive report]
+    G --> K[Site diligence]
 ```
 
 The application defaults to its deterministic curated dataset for a zero-configuration UI preview. Setting `DEMO_DATA_MODE=database` routes the same typed API through PostgreSQL/PostGIS after migration and ingestion.
@@ -97,17 +100,20 @@ Public market observations are grounded in official public-source geography and 
 
 ## Analytics
 
-The public model identifier is demo_expansion_score_v1.
+The public model identifier is `demo_expansion_score_v2`. It mirrors the business concepts and product architecture of the private production platform, but uses independently configured illustrative weights, simplified normalization, curated public observations, and sanitized opportunity scenarios. It does not reproduce production rankings or proprietary acquisition intelligence.
 
 | Component | Illustrative weight |
 | --- | ---: |
-| Population / Demand | 25% |
+| Population | 15% |
 | Population Growth | 20% |
-| Competitive Saturation | 25% |
-| Healthcare Access Gap | 15% |
-| Employment / Activity | 15% |
+| Competitors / 10k Population | 20% |
+| Competitor Strength | 10% |
+| Competitive Availability Gap | 10% |
+| Clinical Workforce Growth | 5% |
+| Occupational Medicine Potential | 10% |
+| Primary-Care Underserved | 10% |
 
-Raw public observations are min-max normalized across the nine curated markets. The public demo remains simplified and does not reproduce production normalization or scoring. Full details are in [docs/methodology.md](docs/methodology.md).
+Raw observations are min-max normalized across the nine curated markets with explicit directionality. Public, derived, and illustrative values remain labeled. Demo v1 remains historical; demo v2 does not reproduce production normalization, weights, thresholds, or ranking logic. Full details are in [docs/methodology.md](docs/methodology.md).
 
 Competitive saturation includes the qualitative display:
 
@@ -121,13 +127,14 @@ Competitive saturation includes the qualitative display:
 
 ## Opportunity Intelligence
 
-The demo presents three entry paths:
+The demo presents four entry-path categories:
 
 - Listed acquisition
 - Sanitized illustrative off-market target
+- Sanitized illustrative occupational-medicine target
 - Real-estate entry
 
-Hoffman Estates includes a linked public listing snapshot verified August 25, 2026. Royersford uses a sanitized off-market example that does not identify a private target and is not a prediction that an owner will sell.
+Hoffman Estates includes a linked public listing snapshot verified August 25, 2026. Royersford uses sanitized off-market and occupational-medicine examples that do not identify private targets and are not predictions that an owner will sell. Standalone occupational medicine is represented as a strategic opportunity type, not an urgent-care competitor.
 
 The entry score is strongest-path oriented with a small breadth bonus. Near-Term Expansion Priority uses a simple geometric combination so a serious weakness in attractiveness or feasibility reduces priority. Neither formula reproduces private production logic.
 
@@ -143,7 +150,7 @@ The primary map:
 - ranks visible pockets beside the map
 - opens a market overview and navigates to full detail
 
-Market detail includes Overview, Competitors, Metrics, Opportunities, and Sources / Methodology.
+Market detail includes Overview, Competitors, Opportunities, and Notes. The Overview centers the eight-component six-column score breakdown. Source links remain attached to relevant fields; methodology lives in this README and [docs/methodology.md](docs/methodology.md).
 
 ## Screenshots
 
@@ -163,13 +170,9 @@ Market detail includes Overview, Competitors, Metrics, Opportunities, and Source
 
 ![Opportunity intelligence](docs/screenshots/opportunities.png)
 
-### Metrics and scoring
+### Notes and source lineage
 
-![Metrics and scoring](docs/screenshots/metrics.png)
-
-### Curated public executive report
-
-![Sample Word report](docs/screenshots/report.png)
+![Notes and source-lineage context](docs/screenshots/metrics.png)
 
 See [docs/screenshots/README.md](docs/screenshots/README.md) for capture conventions.
 
@@ -179,11 +182,14 @@ See [docs/screenshots/README.md](docs/screenshots/README.md) for capture convent
 - deterministic, idempotent curated-data ingestion
 - Zod validation at the ingestion boundary
 - versioned and testable demo scoring
+- conservative physical-facility identity with synthetic alias tests
+- purpose-aware separation of urgent-care competitors and occupational-medicine targets
 - typed Next.js APIs
 - circle-first Leaflet market visualization with retained PostGIS source geometry
 - TanStack competitor table
 - evidence lineage and confidence
 - deterministic Word reporting
+- site traffic represented only as downstream opportunity diligence
 - Docker-based local database
 - Vitest and TypeScript validation
 
@@ -229,6 +235,7 @@ For a UI-only preview without PostgreSQL, omit `.env.local` and run `npm.cmd run
     npm.cmd test
     npm.cmd run typecheck
     npm.cmd run db:check
+    npm.cmd run check:modes
 
 Run db:check after starting PostGIS, applying migrations, and ingesting demo data.
 
@@ -237,7 +244,8 @@ Run db:check after starting PostGIS, applying migrations, and ingesting demo dat
 Install the optional Python report dependency and generate the sample:
 
     python -m pip install -r reporting/requirements.txt
-    python reporting/generate_demo_report.py
+    npm.cmd run report:demo
+    npm.cmd run test:reporting
 
 Routine report output is ignored. A curated public sample is retained under `docs/sample` for this case study.
 

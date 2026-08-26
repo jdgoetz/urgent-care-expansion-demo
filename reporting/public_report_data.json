@@ -1,51 +1,425 @@
 {
   "generated_for": "Curated public market demonstration",
-  "model": "demo_expansion_score_v1",
+  "model": "demo_expansion_score_v2",
+  "near_term_model": "demo_near_term_priority_v2",
+  "normalization": "Min-max normalization across the fixed nine-market curated public universe",
+  "disclaimer": "The public demo mirrors production business concepts but not production normalization, weights, thresholds, rankings, targets, or evidence.",
+  "weights": {
+    "population": 0.15,
+    "population_growth": 0.2,
+    "competitors_per_10000_population": 0.2,
+    "competitor_strength": 0.1,
+    "competitive_availability_gap": 0.1,
+    "clinical_workforce_growth": 0.05,
+    "occupational_medicine_potential": 0.1,
+    "primary_care_underserved": 0.1
+  },
   "markets": [
     {
       "rank": 1,
-      "name": "Hoffman Estates",
-      "zip": "60169",
-      "metro": "Chicago Northwest Suburbs",
-      "state": "Illinois",
-      "listed": true,
-      "near_term": 81.3,
-      "expansion": 67.6,
-      "entry": 97.8,
-      "kpis": [["Population", "33,401"], ["Population Growth", "0.1%"], ["Competitors / 10k", "0.60  ++"], ["Avg Competitor Rating", "Not stored"], ["Avg Weekly Open Hours", "Not verified"]],
-      "competitors": [["Physicians Immediate Care", "Not stored", "Not stored", "Not verified", "Urgent care"], ["Ascension Saint Alexius Immediate Care", "Not stored", "Not stored", "Not verified", "Health-system immediate care"]],
-      "opportunities": [["Public listed acquisition", "Premier OB/GYN & Med Spa Practice - Chicago Suburb", "92", "High"], ["Real estate", "Illustrative medical-office alternative", "58", "Low"]],
-      "metrics": [["Population / Demand", "46.2", "25%", "11.6"], ["Population Growth", "49.0", "20%", "9.8"], ["Competitive Saturation", "81.8", "25%", "20.5"], ["Healthcare Access Gap", "100.0", "15%", "15.0"], ["Employment / Activity", "71.9", "15%", "10.8"]]
-    },
-    {
-      "rank": 2,
+      "id": "pa_royersford_19468",
       "name": "Royersford / Limerick",
       "zip": "19468",
       "metro": "Greater Philadelphia",
       "state": "Pennsylvania",
       "listed": false,
-      "near_term": 70.9,
-      "expansion": 59.5,
-      "entry": 84.4,
-      "kpis": [["Population", "28,194"], ["Population Growth", "8.4%"], ["Competitors / 10k", "0.71  +"], ["Avg Competitor Rating", "Not stored"], ["Avg Weekly Open Hours", "84"]],
-      "competitors": [["Tower Health Urgent Care - Limerick", "Not stored", "Not stored", "84", "Health-system urgent care"], ["AFC Urgent Care Limerick", "Not stored", "Not stored", "Not verified", "Urgent care"]],
-      "opportunities": [["Sanitized off-market", "Illustrative Independent Operator", "78", "Medium"], ["Real estate", "Illustrative medical-office conversion path", "64", "Low"]],
-      "metrics": [["Population / Demand", "34.0", "25%", "8.5"], ["Population Growth", "89.3", "20%", "17.9"], ["Competitive Saturation", "72.7", "25%", "18.2"], ["Healthcare Access Gap", "0.0", "15%", "0.0"], ["Employment / Activity", "100.0", "15%", "15.0"]]
+      "scores": {
+        "expansion": 68.5,
+        "expansion_bucket": "Attractive",
+        "entry": 87.2,
+        "entry_bucket": "High",
+        "near_term": 77.3,
+        "near_term_bucket": "Immediate Review",
+        "completeness": 100
+      },
+      "metrics": [
+        {
+          "label": "Population",
+          "raw": "28,194",
+          "normalized": "34.0",
+          "weight": "15%",
+          "contribution": "5.1",
+          "explanation": "Larger markets provide greater absolute demand potential.",
+          "provenance": "real_public_observation"
+        },
+        {
+          "label": "Population Growth",
+          "raw": "8.4 % change, 2019-2024",
+          "normalized": "89.3",
+          "weight": "20%",
+          "contribution": "17.9",
+          "explanation": "Faster growth indicates expanding future demand.",
+          "provenance": "derived_public_observation"
+        },
+        {
+          "label": "Competitors / 10k Population",
+          "raw": "0.7 physical competitors per 10k",
+          "normalized": "72.7",
+          "weight": "20%",
+          "contribution": "14.5",
+          "explanation": "Measures urgent-care supply relative to population; lower saturation is more favorable.",
+          "provenance": "derived_public_observation"
+        },
+        {
+          "label": "Competitor Strength",
+          "raw": "55.0 illustrative index",
+          "normalized": "100.0",
+          "weight": "10%",
+          "contribution": "10.0",
+          "explanation": "Combines public ratings and log-adjusted review volume conceptually to approximate competitive entrenchment.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Competitive Availability Gap",
+          "raw": "45.0 % of standard hours",
+          "normalized": "100.0",
+          "weight": "10%",
+          "contribution": "10.0",
+          "explanation": "Estimates standard urgent-care hours when relatively few competitors are open.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Clinical Workforce Growth",
+          "raw": "4.6 % illustrative change",
+          "normalized": "100.0",
+          "weight": "5%",
+          "contribution": "5.0",
+          "explanation": "Indicates whether the local clinician ecosystem appears to be expanding.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Occupational Medicine Potential",
+          "raw": "18.0 % illustrative industrial/logistics share",
+          "normalized": "60.0",
+          "weight": "10%",
+          "contribution": "6.0",
+          "explanation": "Uses employment composition to approximate employer-health and occupational-care demand.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Primary-Care Underserved",
+          "raw": "2.3 % uninsured access proxy",
+          "normalized": "0.0",
+          "weight": "10%",
+          "contribution": "0.0",
+          "explanation": "Represents a simplified public access-gap proxy that may support demand for convenient care.",
+          "provenance": "derived_public_observation"
+        }
+      ],
+      "competitors": [
+        {
+          "name": "Tower Health Urgent Care - Limerick",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": 84,
+          "operator": "Health-system urgent care"
+        },
+        {
+          "name": "AFC Urgent Care Limerick",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": "Not verified",
+          "operator": "Urgent care"
+        }
+      ],
+      "opportunities": [
+        {
+          "path": "offmarket_target",
+          "title": "Illustrative Independent Operator",
+          "status": "sanitized case study",
+          "score": 78,
+          "confidence": "Medium",
+          "provenance": "illustrative_demo_value",
+          "site_traffic": "Precise location unavailable"
+        },
+        {
+          "path": "occupational_medicine_target",
+          "title": "Illustrative Occupational Health Target",
+          "status": "sanitized case study",
+          "score": 55,
+          "confidence": "Low",
+          "provenance": "illustrative_demo_value",
+          "site_traffic": "Precise location unavailable"
+        },
+        {
+          "path": "real_estate",
+          "title": "Illustrative medical-office conversion path",
+          "status": "illustrative demo path",
+          "score": 64,
+          "confidence": "Low",
+          "provenance": "illustrative_demo_value",
+          "site_traffic": "Precise location unavailable"
+        }
+      ],
+      "context": {
+        "geometry": "Five-mile demo analysis area centered on Census ZCTA 19468",
+        "provenance": "1 public, 3 derived, 4 illustrative score inputs",
+        "note": "Real ZCTA geography and labeled public or illustrative observations are paired with demo_expansion_score_v2. U.S. Census Bureau TIGERweb, 2020 ZCTA geometry. The public map uses a 5-mile circular analysis area rather than the literal ZIP boundary. Production normalization, weights, thresholds, rankings, and opportunity intelligence are intentionally excluded."
+      }
+    },
+    {
+      "rank": 2,
+      "id": "il_hoffman_estates_60169",
+      "name": "Hoffman Estates",
+      "zip": "60169",
+      "metro": "Chicago Northwest Suburbs",
+      "state": "Illinois",
+      "listed": true,
+      "scores": {
+        "expansion": 54.3,
+        "expansion_bucket": "Watchlist",
+        "entry": 97.8,
+        "entry_bucket": "High",
+        "near_term": 72.9,
+        "near_term_bucket": "Immediate Review",
+        "completeness": 100
+      },
+      "metrics": [
+        {
+          "label": "Population",
+          "raw": "33,401",
+          "normalized": "46.2",
+          "weight": "15%",
+          "contribution": "6.9",
+          "explanation": "Larger markets provide greater absolute demand potential.",
+          "provenance": "real_public_observation"
+        },
+        {
+          "label": "Population Growth",
+          "raw": "0.1 % change, 2019-2024",
+          "normalized": "49.0",
+          "weight": "20%",
+          "contribution": "9.8",
+          "explanation": "Faster growth indicates expanding future demand.",
+          "provenance": "derived_public_observation"
+        },
+        {
+          "label": "Competitors / 10k Population",
+          "raw": "0.6 physical competitors per 10k",
+          "normalized": "81.8",
+          "weight": "20%",
+          "contribution": "16.4",
+          "explanation": "Measures urgent-care supply relative to population; lower saturation is more favorable.",
+          "provenance": "derived_public_observation"
+        },
+        {
+          "label": "Competitor Strength",
+          "raw": "70.0 illustrative index",
+          "normalized": "25.0",
+          "weight": "10%",
+          "contribution": "2.5",
+          "explanation": "Combines public ratings and log-adjusted review volume conceptually to approximate competitive entrenchment.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Competitive Availability Gap",
+          "raw": "30.0 % of standard hours",
+          "normalized": "40.0",
+          "weight": "10%",
+          "contribution": "4.0",
+          "explanation": "Estimates standard urgent-care hours when relatively few competitors are open.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Clinical Workforce Growth",
+          "raw": "2.8 % illustrative change",
+          "normalized": "41.9",
+          "weight": "5%",
+          "contribution": "2.1",
+          "explanation": "Indicates whether the local clinician ecosystem appears to be expanding.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Occupational Medicine Potential",
+          "raw": "12.0 % illustrative industrial/logistics share",
+          "normalized": "25.7",
+          "weight": "10%",
+          "contribution": "2.6",
+          "explanation": "Uses employment composition to approximate employer-health and occupational-care demand.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Primary-Care Underserved",
+          "raw": "10.8 % uninsured access proxy",
+          "normalized": "100.0",
+          "weight": "10%",
+          "contribution": "10.0",
+          "explanation": "Represents a simplified public access-gap proxy that may support demand for convenient care.",
+          "provenance": "derived_public_observation"
+        }
+      ],
+      "competitors": [
+        {
+          "name": "Physicians Immediate Care",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": "Not verified",
+          "operator": "Urgent care"
+        },
+        {
+          "name": "Ascension Saint Alexius Immediate Care",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": "Not verified",
+          "operator": "Health-system immediate care"
+        }
+      ],
+      "opportunities": [
+        {
+          "path": "listed_acquisition",
+          "title": "Premier OB/GYN & Med Spa Practice - Chicago Suburb",
+          "status": "active public listing",
+          "score": 92,
+          "confidence": "High",
+          "provenance": "real_public_observation",
+          "site_traffic": "Precise location unavailable"
+        },
+        {
+          "path": "real_estate",
+          "title": "Illustrative medical-office alternative",
+          "status": "illustrative demo path",
+          "score": 58,
+          "confidence": "Low",
+          "provenance": "illustrative_demo_value",
+          "site_traffic": "Precise location unavailable"
+        }
+      ],
+      "context": {
+        "geometry": "Five-mile demo analysis area centered on Census ZCTA 60169",
+        "provenance": "1 public, 3 derived, 4 illustrative score inputs",
+        "note": "Real ZCTA geography and labeled public or illustrative observations are paired with demo_expansion_score_v2. U.S. Census Bureau TIGERweb, 2020 ZCTA geometry. The public map uses a 5-mile circular analysis area rather than the literal ZIP boundary. Production normalization, weights, thresholds, rankings, and opportunity intelligence are intentionally excluded."
+      }
     },
     {
       "rank": 3,
-      "name": "State College",
-      "zip": "16801",
-      "metro": "State College",
+      "id": "pa_lancaster_17601",
+      "name": "Lancaster",
+      "zip": "17601",
+      "metro": "Lancaster",
       "state": "Pennsylvania",
       "listed": false,
-      "near_term": 48.3,
-      "expansion": 40.2,
-      "entry": 58.0,
-      "kpis": [["Population", "40,774"], ["Population Growth", "-10.0%"], ["Competitors / 10k", "0.50  ++"], ["Avg Competitor Rating", "Not stored"], ["Avg Weekly Open Hours", "75"]],
-      "competitors": [["Geisinger ConvenientCare State College", "Not stored", "Not stored", "75", "Health-system urgent care"], ["MedExpress Urgent Care - State College", "Not stored", "Not stored", "Not verified", "Urgent care"]],
-      "opportunities": [["Real estate", "Illustrative medical-office search", "58", "Low"]],
-      "metrics": [["Population / Demand", "63.5", "25%", "15.9"], ["Population Growth", "0.0", "20%", "0.0"], ["Competitive Saturation", "90.9", "25%", "22.7"], ["Healthcare Access Gap", "10.6", "15%", "1.6"], ["Employment / Activity", "0.0", "15%", "0.0"]]
+      "scores": {
+        "expansion": 67,
+        "expansion_bucket": "Attractive",
+        "entry": 55,
+        "entry_bucket": "Moderate",
+        "near_term": 60.7,
+        "near_term_bucket": "Strong",
+        "completeness": 100
+      },
+      "metrics": [
+        {
+          "label": "Population",
+          "raw": "56,382",
+          "normalized": "100.0",
+          "weight": "15%",
+          "contribution": "15.0",
+          "explanation": "Larger markets provide greater absolute demand potential.",
+          "provenance": "real_public_observation"
+        },
+        {
+          "label": "Population Growth",
+          "raw": "7.3 % change, 2019-2024",
+          "normalized": "84.0",
+          "weight": "20%",
+          "contribution": "16.8",
+          "explanation": "Faster growth indicates expanding future demand.",
+          "provenance": "derived_public_observation"
+        },
+        {
+          "label": "Competitors / 10k Population",
+          "raw": "0.5 physical competitors per 10k",
+          "normalized": "90.9",
+          "weight": "20%",
+          "contribution": "18.2",
+          "explanation": "Measures urgent-care supply relative to population; lower saturation is more favorable.",
+          "provenance": "derived_public_observation"
+        },
+        {
+          "label": "Competitor Strength",
+          "raw": "72.0 illustrative index",
+          "normalized": "15.0",
+          "weight": "10%",
+          "contribution": "1.5",
+          "explanation": "Combines public ratings and log-adjusted review volume conceptually to approximate competitive entrenchment.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Competitive Availability Gap",
+          "raw": "25.0 % of standard hours",
+          "normalized": "20.0",
+          "weight": "10%",
+          "contribution": "2.0",
+          "explanation": "Estimates standard urgent-care hours when relatively few competitors are open.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Clinical Workforce Growth",
+          "raw": "3.7 % illustrative change",
+          "normalized": "71.0",
+          "weight": "5%",
+          "contribution": "3.6",
+          "explanation": "Indicates whether the local clinician ecosystem appears to be expanding.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Occupational Medicine Potential",
+          "raw": "22.0 % illustrative industrial/logistics share",
+          "normalized": "82.9",
+          "weight": "10%",
+          "contribution": "8.3",
+          "explanation": "Uses employment composition to approximate employer-health and occupational-care demand.",
+          "provenance": "illustrative_demo_value"
+        },
+        {
+          "label": "Primary-Care Underserved",
+          "raw": "3.7 % uninsured access proxy",
+          "normalized": "16.5",
+          "weight": "10%",
+          "contribution": "1.7",
+          "explanation": "Represents a simplified public access-gap proxy that may support demand for convenient care.",
+          "provenance": "derived_public_observation"
+        }
+      ],
+      "competitors": [
+        {
+          "name": "Patient First - Lancaster",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": "Not verified",
+          "operator": "Urgent care"
+        },
+        {
+          "name": "Penn Medicine Lancaster General Health Urgent Care",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": "Not verified",
+          "operator": "Health-system urgent care"
+        },
+        {
+          "name": "MedExpress Urgent Care - Lancaster",
+          "rating": "Not stored",
+          "reviews": "Not stored",
+          "weekly_hours": "Not verified",
+          "operator": "Urgent care"
+        }
+      ],
+      "opportunities": [
+        {
+          "path": "real_estate",
+          "title": "Illustrative site-screening path",
+          "status": "illustrative demo path",
+          "score": 55,
+          "confidence": "Low",
+          "provenance": "illustrative_demo_value",
+          "site_traffic": "Precise location unavailable"
+        }
+      ],
+      "context": {
+        "geometry": "Five-mile demo analysis area centered on Census ZCTA 17601",
+        "provenance": "1 public, 3 derived, 4 illustrative score inputs",
+        "note": "Real ZCTA geography and labeled public or illustrative observations are paired with demo_expansion_score_v2. U.S. Census Bureau TIGERweb, 2020 ZCTA geometry. The public map uses a 5-mile circular analysis area rather than the literal ZIP boundary. Production normalization, weights, thresholds, rankings, and opportunity intelligence are intentionally excluded."
+      }
     }
   ]
 }

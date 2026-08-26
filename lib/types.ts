@@ -3,11 +3,18 @@ import type { MultiPolygon, Polygon } from "geojson";
 export type DemoMetricKey =
   | "population"
   | "population_growth"
-  | "competitive_saturation"
-  | "healthcare_access_gap"
-  | "employment_activity";
+  | "competitors_per_10000_population"
+  | "competitor_strength"
+  | "competitive_availability_gap"
+  | "clinical_workforce_growth"
+  | "occupational_medicine_potential"
+  | "primary_care_underserved";
 
-export type OpportunityKind = "listed_acquisition" | "offmarket_target" | "real_estate";
+export type OpportunityKind =
+  | "listed_acquisition"
+  | "offmarket_target"
+  | "occupational_medicine_target"
+  | "real_estate";
 
 export type DemoObservationKind =
   | "real_public_observation"
@@ -28,6 +35,7 @@ export interface DemoMetric {
   sourceUrl?: string;
   vintage?: string;
   observationKind: DemoObservationKind;
+  explanation: string;
 }
 
 export interface DemoCompetitor {
@@ -41,6 +49,23 @@ export interface DemoCompetitor {
   mapUrl: string;
   sourceUrl?: string;
   sourceNote: string;
+  physicalFacilityId: string;
+  strictUrgentCare: true;
+  sourceAliases: string[];
+}
+
+export interface DemoSiteTraffic {
+  status: "precise_location_unavailable" | "illustrative_demo_value" | "public_observation";
+  observationKind: DemoObservationKind;
+  nearestAadt?: number;
+  road?: string;
+  distanceMiles?: number;
+  countYear?: number;
+  maxAadtQuarterMile?: number;
+  maxAadtHalfMile?: number;
+  source?: string;
+  sourceUrl?: string;
+  note: string;
 }
 
 export interface DemoOpportunity {
@@ -57,6 +82,8 @@ export interface DemoOpportunity {
   details?: Record<string, string | number>;
   disclosure?: string;
   activePublicListing?: boolean;
+  observationKind: DemoObservationKind;
+  siteTraffic: DemoSiteTraffic;
 }
 
 export interface DemoScores {
@@ -67,6 +94,9 @@ export interface DemoScores {
   nearTermPriority: number;
   nearTermBucket: "Immediate Review" | "Strong" | "Monitor" | "Low";
   saturationSignal: "++" | "+" | "○" | "-" | "--";
+  expansionModelId: "demo_expansion_score_v2";
+  nearTermModelId: "demo_near_term_priority_v2";
+  expansionStatus: "complete" | "partial" | "insufficient_data";
 }
 
 export interface DemoPocket {

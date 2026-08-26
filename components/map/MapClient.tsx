@@ -195,7 +195,7 @@ export default function MapClient() {
           <div className="segmented-control">
             <button className={colorMode === "marketArea" ? "active" : ""} onClick={() => setColorMode("marketArea")}>Market Areas</button>
             <button className={colorMode === "nearTermPriority" ? "active" : ""} onClick={() => setColorMode("nearTermPriority")}>Demo Near-Term</button>
-            <button className={colorMode === "expansion" ? "active" : ""} onClick={() => setColorMode("expansion")}>Demo Expansion</button>
+            <button className={colorMode === "expansion" ? "active" : ""} onClick={() => setColorMode("expansion")}>Demo Expansion v2</button>
           </div>
         </div>
 
@@ -256,7 +256,7 @@ export default function MapClient() {
             const activeListing = pocket.opportunities.some((opportunity) => opportunity.activePublicListing);
             const color = activeListing ? LISTING_VIOLET : analyticalColor;
             const population = pocket.metrics.find((metric) => metric.key === "population");
-            const saturation = pocket.metrics.find((metric) => metric.key === "competitive_saturation");
+            const saturation = pocket.metrics.find((metric) => metric.key === "competitors_per_10000_population");
             return (
               <Circle
                 key={pocket.id + colorMode}
@@ -276,7 +276,7 @@ export default function MapClient() {
                   {activeListing && <>ACTIVE PUBLIC LISTED ACQUISITION<br /></>}
                   Curated Market Analysis Area · {pocket.displayRadiusMiles}-mile radius<br />
                   Demo Near-Term Priority: {pocket.scores.nearTermPriority.toFixed(1)}<br />
-                  Demo Expansion Score: {pocket.scores.expansion.toFixed(1)}<br />
+                  Demo Expansion Score v2: {pocket.scores.expansion.toFixed(1)}<br />
                   Population: {population?.rawValue.toLocaleString("en-US") ?? "Not available"}<br />
                   Competitors / 10k: {saturation?.rawValue.toFixed(2) ?? "Not available"}
                 </Tooltip>

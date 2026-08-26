@@ -15,7 +15,7 @@ describe("curated real-market public portfolio", () => {
     for (const pocket of DEMO_POCKETS) {
       expect(["Polygon", "MultiPolygon"]).toContain(pocket.geometry.type);
       expect(pocket.displayRadiusMiles).toBe(5);
-      expect(pocket.metrics).toHaveLength(5);
+      expect(pocket.metrics).toHaveLength(8);
       expect(pocket.competitors.length).toBeGreaterThanOrEqual(2);
       expect(pocket.opportunities.length).toBeGreaterThanOrEqual(1);
     }
@@ -41,6 +41,18 @@ describe("curated real-market public portfolio", () => {
     const royersford = DEMO_POCKETS.find((pocket) => pocket.zipCode === "19468");
     expect(hoffman?.opportunities.some((item) => item.activePublicListing && item.sourceUrl?.startsWith("https://"))).toBe(true);
     expect(royersford?.opportunities.some((item) => item.title === "Illustrative Independent Operator")).toBe(true);
+    expect(royersford?.opportunities.some((item) => item.kind === "occupational_medicine_target" && item.observationKind === "illustrative_demo_value")).toBe(true);
+    expect(royersford?.competitors.some((item) => item.name.includes("Occupational"))).toBe(false);
+  });
+
+  it("uses canonical physical strict facilities for saturation", () => {
+    for (const pocket of DEMO_POCKETS) {
+      expect(pocket.competitors.every((competitor) => competitor.strictUrgentCare)).toBe(true);
+      expect(new Set(pocket.competitors.map((competitor) => competitor.physicalFacilityId)).size).toBe(pocket.competitors.length);
+      const metric = pocket.metrics.find((item) => item.key === "competitors_per_10000_population");
+      const population = pocket.metrics.find((item) => item.key === "population")?.rawValue ?? 1;
+      expect(metric?.rawValue).toBeCloseTo((pocket.competitors.length / population) * 10_000, 1);
+    }
   });
 
   it("keeps every generated score in the public 0-100 range", () => {

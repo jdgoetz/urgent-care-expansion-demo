@@ -20,7 +20,6 @@ NAVY = "173047"
 TEAL = "136F63"
 BLUE = "1F6F8B"
 LIGHT = "E8EEF2"
-GRAY = "607183"
 
 
 def shade(cell, fill: str):
@@ -73,10 +72,7 @@ def add_map(market_name: str, zip_code: str, listed: bool) -> Path:
     fill = "#d9cbea" if listed else "#cfe5df"
     outline = "#6f4aa8" if listed else "#136f63"
     for ring in rings:
-        rendered = [
-            (450 + (point[0] - (min_x + max_x) / 2) * scale, 175 - (point[1] - (min_y + max_y) / 2) * scale)
-            for point in ring
-        ]
+        rendered = [(450 + (point[0] - (min_x + max_x) / 2) * scale, 175 - (point[1] - (min_y + max_y) / 2) * scale) for point in ring]
         draw.polygon(rendered, fill=fill, outline=outline, width=4)
     draw.text((30, 310), f"{market_name} | Census ZCTA {zip_code}", fill="#173047")
     image.save(path)
@@ -85,13 +81,13 @@ def add_map(market_name: str, zip_code: str, listed: bool) -> Path:
 
 def configure(document: Document):
     section = document.sections[0]
-    section.top_margin = Inches(0.8)
-    section.bottom_margin = Inches(0.8)
-    section.left_margin = Inches(0.8)
-    section.right_margin = Inches(0.8)
+    section.top_margin = Inches(0.7)
+    section.bottom_margin = Inches(0.7)
+    section.left_margin = Inches(0.65)
+    section.right_margin = Inches(0.65)
     normal = document.styles["Normal"]
     normal.font.name = "Arial"
-    normal.font.size = Pt(10)
+    normal.font.size = Pt(9)
     normal.font.color.rgb = RGBColor.from_string(NAVY)
     for name, size in (("Heading 1", 18), ("Heading 2", 14), ("Heading 3", 11)):
         style = document.styles[name]
@@ -101,79 +97,85 @@ def configure(document: Document):
         style.font.color.rgb = RGBColor.from_string(BLUE)
 
 
-def build_report():
+def build_report(output: Path = OUTPUT):
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     document = Document()
     configure(document)
 
     title = document.add_paragraph()
-    title.paragraph_format.space_before = Pt(100)
-    title_run = title.add_run("Urgent Care Expansion\nIntelligence Demo")
-    title_run.font.name = "Arial"
-    title_run.font.size = Pt(28)
-    title_run.font.bold = True
-    title_run.font.color.rgb = RGBColor.from_string(NAVY)
-    subtitle = document.add_paragraph("Curated real-market public portfolio")
-    subtitle.runs[0].font.size = Pt(15)
+    title.paragraph_format.space_before = Pt(90)
+    run = title.add_run("Urgent Care Expansion\nIntelligence Demo v2")
+    run.font.name = "Arial"
+    run.font.size = Pt(27)
+    run.font.bold = True
+    run.font.color.rgb = RGBColor.from_string(NAVY)
+    subtitle = document.add_paragraph("Curated public portfolio | independent illustrative scoring")
+    subtitle.runs[0].font.size = Pt(14)
     subtitle.runs[0].font.color.rgb = RGBColor.from_string(TEAL)
     note = document.add_paragraph()
-    note.paragraph_format.space_before = Pt(30)
+    note.paragraph_format.space_before = Pt(25)
     note.add_run("Boundary: ").bold = True
-    note.add_run("Market geography and labeled public observations are real. Demo scores and sanitized scenarios are illustrative; production methodology is excluded.")
+    note.add_run(payload["disclaimer"])
     document.add_page_break()
 
-    document.add_heading("Executive Methodology", level=1)
-    document.add_paragraph("A compact public demonstration of the decision workflow:")
+    document.add_heading("Decision Framework", level=1)
     add_table(document, ["Stage", "Decision question"], [
-        ["Market fundamentals", "Do public observations indicate structural attractiveness?"],
-        ["Demo Expansion Score", "How do five transparent normalized components compare?"],
-        ["Entry opportunities", "Is there a public or clearly illustrative near-term entry path?"],
-        ["Entry Feasibility", "How strong is the best available demo path?"],
-        ["Near-Term Priority", "Where should demo diligence happen first?"],
-    ], [2.0, 5.0])
-    document.add_paragraph()
-    document.add_heading("Ranked Markets", level=2)
-    add_table(document, ["Rank", "Market", "Metro", "Demo Near-Term", "Demo Expansion", "Demo Entry"], [
-        [market["rank"], market["name"], market["metro"], market["near_term"], market["expansion"], market["entry"]]
-        for market in payload["markets"]
+        ["Market screening", "How attractive is the market across five public-demo business pillars?"],
+        ["Physical facilities", "How many distinct strict general urgent-care facilities serve the market?"],
+        ["Opportunity paths", "What listed or sanitized entry paths are represented?"],
+        ["Site diligence", "Is a precise site available for downstream traffic review?"],
+        ["Near-Term Priority", "Which demo markets combine attractiveness and entry feasibility?"],
     ])
-    document.add_paragraph("Public model: demo_expansion_score_v1. This report does not reproduce production weights or opportunity logic.")
+    document.add_paragraph(f"Model: {payload['model']}. {payload['normalization']}.")
+    document.add_paragraph(payload["disclaimer"])
+
+    document.add_heading("Illustrative Demo Weights", level=2)
+    add_table(document, ["Component", "Weight"], [[key.replace("_", " ").title(), f"{value * 100:.0f}%"] for key, value in payload["weights"].items()])
+    document.add_heading("Ranked Markets", level=2)
+    add_table(document, ["Rank", "Market", "Metro", "Near-Term", "Expansion v2", "Entry"], [[market["rank"], market["name"], market["metro"], market["scores"]["near_term"], market["scores"]["expansion"], market["scores"]["entry"]] for market in payload["markets"]])
 
     for market in payload["markets"]:
         document.add_page_break()
-        document.add_heading(str(market["rank"]) + ". " + market["name"], level=1)
-        document.add_paragraph(market["metro"] + " | " + market["state"] + " | ZIP " + market["zip"])
-        score_table = add_table(document, ["Demo Near-Term Priority", "Demo Expansion Score", "Demo Entry Feasibility"], [[market["near_term"], market["expansion"], market["entry"]]])
+        document.add_heading(f"{market['rank']}. {market['name']}", level=1)
+        document.add_paragraph(f"{market['metro']} | {market['state']} | ZIP {market['zip']}")
+
+        document.add_heading("Decision Scores", level=2)
+        score_table = add_table(document, ["Demo Expansion Score v2", "Entry Feasibility", "Near-Term Priority", "Completeness"], [[market["scores"]["expansion"], market["scores"]["entry"], market["scores"]["near_term"], f"{market['scores']['completeness']:.0f}%"]])
         for cell in score_table.rows[1].cells:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-            for run in cell.paragraphs[0].runs:
-                run.bold = True
-                run.font.size = Pt(15)
-                run.font.color.rgb = RGBColor.from_string(TEAL)
+            for score_run in cell.paragraphs[0].runs:
+                score_run.bold = True
+                score_run.font.size = Pt(14)
+                score_run.font.color.rgb = RGBColor.from_string(TEAL)
+
         map_path = add_map(market["name"], market["zip"], market.get("listed", False))
         paragraph = document.add_paragraph()
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        map_image = paragraph.add_run().add_picture(str(map_path), width=Inches(5.9))
-        map_image._inline.docPr.set("title", "Census ZCTA market geometry")
-        map_image._inline.docPr.set("descr", "Census ZCTA geometry for " + market["name"])
-        caption = document.add_paragraph("U.S. Census Bureau TIGERweb 2020 ZCTA geometry", style=None)
-        caption.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        caption.runs[0].italic = True
-        caption.runs[0].font.size = Pt(8)
+        image = paragraph.add_run().add_picture(str(map_path), width=Inches(5.7))
+        image._inline.docPr.set("title", "Census ZCTA market geometry")
+        image._inline.docPr.set("descr", "Public Census ZCTA geometry for " + market["name"])
 
-        document.add_heading("Market Overview", level=2)
-        add_table(document, ["Indicator", "Value"], market["kpis"], [4.6, 2.4])
+        document.add_heading("Score Breakdown", level=2)
+        add_table(document, ["Metric", "Raw Value", "Normalized Score", "Weight", "Contribution", "Explanation"], [[metric["label"], metric["raw"], metric["normalized"], metric["weight"], metric["contribution"], f"{metric['explanation']} [{metric['provenance']}]" ] for metric in market["metrics"]], [1.25, 1.15, 0.75, 0.55, 0.7, 2.4])
+
         document.add_heading("Competitors", level=2)
-        add_table(document, ["Competitor", "Rating", "Reviews", "Weekly hours", "Operator / type"], market["competitors"])
-        document.add_heading("Entry Opportunities", level=2)
-        add_table(document, ["Path", "Opportunity / scenario", "Demo score", "Confidence"], market["opportunities"])
-        document.add_heading("Metric Scoring", level=2)
-        add_table(document, ["Metric", "Normalized", "Weight", "Contribution"], market["metrics"])
-        document.add_paragraph("Source lineage: ACS 2019/2024 5-year estimates, Census TIGERweb geometry, linked public operator pages, and explicitly labeled public or illustrative opportunity evidence. No production records are included.")
+        add_table(document, ["Physical Urgent-Care Facility", "Rating", "Reviews", "Weekly Hours", "Category / Operator"], [[row["name"], row["rating"], row["reviews"], row["weekly_hours"], row["operator"]] for row in market["competitors"]])
 
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    document.save(OUTPUT)
-    return OUTPUT
+        document.add_heading("Opportunity Paths", level=2)
+        add_table(document, ["Path", "Opportunity / Scenario", "Status", "Demo Score", "Provenance", "Site Traffic"], [[row["path"].replace("_", " ").title(), row["title"], row["status"], row["score"], row["provenance"], row["site_traffic"]] for row in market["opportunities"]])
+
+        document.add_heading("Additional Context", level=2)
+        add_table(document, ["Context", "Value"], [["Geometry", market["context"]["geometry"]], ["Input provenance", market["context"]["provenance"]], ["Methodology", market["context"]["note"]]])
+
+    document.add_page_break()
+    document.add_heading("Methodology / Disclaimer", level=1)
+    document.add_paragraph(payload["disclaimer"])
+    document.add_paragraph("Site traffic is opportunity diligence and does not contribute to Demo Expansion Score v2. Precise location unavailable means no defensible site coordinate was asserted; a market centroid was not substituted.")
+    document.add_paragraph("No private production target, evidence, score output, weight, normalization distribution, ranking, run identifier, report content, or credential is included.")
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    document.save(output)
+    return output
 
 
 if __name__ == "__main__":
