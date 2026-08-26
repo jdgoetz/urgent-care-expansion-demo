@@ -1,14 +1,28 @@
 import type { DemoMetric, DemoScores } from "@/lib/types";
 
-export const DEMO_EXPANSION_MODEL_ID = "demo_expansion_score_v1";
+export const DEMO_EXPANSION_V1_MODEL_ID = "demo_expansion_score_v1";
+export const DEMO_EXPANSION_MODEL_ID = "demo_expansion_score_v2";
+export const DEMO_NEAR_TERM_MODEL_ID = "demo_near_term_priority_v2";
 
-export const DEMO_EXPANSION_WEIGHTS = {
+export const DEMO_EXPANSION_V1_WEIGHTS = {
   population: 0.25,
   population_growth: 0.2,
   competitive_saturation: 0.25,
   healthcare_access_gap: 0.15,
   employment_activity: 0.15,
 } as const;
+
+// Public-demo configuration only. These weights intentionally do not reproduce production calibration.
+export const DEMO_EXPANSION_WEIGHTS = {
+  population: 0.15,
+  population_growth: 0.2,
+  competitors_per_10000_population: 0.2,
+  competitor_strength: 0.1,
+  competitive_availability_gap: 0.1,
+  clinical_workforce_growth: 0.05,
+  occupational_medicine_potential: 0.1,
+  primary_care_underserved: 0.1,
+} as const satisfies Record<DemoMetric["key"], number>;
 
 export const DEMO_SIGNAL_WEIGHTS = {
   independent_operator: 10,
@@ -34,10 +48,21 @@ export function saturationSignal(normalizedScore: number): DemoScores["saturatio
 
 export function scoreExpansion(metrics: DemoMetric[]) {
   const byKey = new Map(metrics.map((metric) => [metric.key, metric]));
-  const score = Object.entries(DEMO_EXPANSION_WEIGHTS).reduce((total, [key, weight]) => {
-    return total + (byKey.get(key as DemoMetric["key"])?.normalizedScore ?? 0) * weight;
-  }, 0);
-  return round(score);
+  const available = Object.entries(DEMO_EXPANSION_WEIGHTS).flatMap(([key, weight]) => {
+    const metric = byKey.get(key as DemoMetric["key"]);
+    return metric && Number.isFinite(metric.normalizedScore) ? [{ metric, weight }] : [];
+  });
+  const availableWeight = available.reduce((total, item) => total + item.weight, 0);
+  const completenessPct = round((available.length / Object.keys(DEMO_EXPANSION_WEIGHTS).length) * 100);
+  if (!available.length || availableWeight < 0.4) {
+    return { score: null, completenessPct, status: "insufficient_data" as const };
+  }
+  const weighted = available.reduce((total, item) => total + item.metric.normalizedScore * item.weight, 0);
+  return {
+    score: round(weighted / availableWeight),
+    completenessPct,
+    status: available.length === Object.keys(DEMO_EXPANSION_WEIGHTS).length ? "complete" as const : "partial" as const,
+  };
 }
 
 export function demoApproachability(signals: DemoSignal[]) {

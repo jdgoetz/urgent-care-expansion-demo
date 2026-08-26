@@ -99,7 +99,7 @@ async function main() {
     await client.query("DELETE FROM demo_regions WHERE NOT EXISTS (SELECT 1 FROM demo_pockets p WHERE p.region_id=demo_regions.region_id)");
     await client.query(
       "UPDATE demo_ingestion_runs SET status='succeeded', completed_at=now(), row_count=$2, metadata=$3::jsonb WHERE run_id=$1",
-      [runId, pockets.length, JSON.stringify({ model: "demo_expansion_score_v1", deterministic: true, geography: "public_zcta" })],
+      [runId, pockets.length, JSON.stringify({ model: "demo_expansion_score_v2", deterministic: true, geography: "public_zcta", productionCalibrationIncluded: false })],
     );
     await client.query("COMMIT");
     console.log("Ingested " + pockets.length + " curated public demo markets.");
