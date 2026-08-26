@@ -2,22 +2,45 @@
 
 ## Runtime flow
 
-Curated market specifications combine public observations with official Census TIGERweb ZCTA geometry and explicit five-mile display radii. Zod validates the records before the idempotent ingestion job upserts one region, two states, seven metro contexts, and nine markets into PostgreSQL/PostGIS.
+```mermaid
+flowchart TD
+    A[Curated public observations] --> B[Validation and provenance]
+    B --> C[Physical-facility normalization]
+    C --> D[Market metrics]
+    D --> E[Demo Expansion Score v2]
+    F[Sanitized entry scenarios] --> G[Demo Entry Feasibility]
+    E --> H[Demo Near-Term Priority v2]
+    G --> H
+    F --> I[Site diligence]
+    E --> J[Typed API]
+    H --> J
+    J --> K[Map and market detail]
+    J --> L[Public Word report]
+```
 
-Next.js route handlers read through a typed repository. In database mode the repository queries PostGIS and serializes geometry as GeoJSON. In preview mode it serves the same deterministic in-memory objects. The map uses canonical centroids and persisted display radii for its dominant circular market layer; the ZCTA remains the analytical and lineage geometry.
+Curated market specifications combine labeled public and illustrative observations with official Census TIGERweb ZCTA geometry and explicit five-mile display radii. Zod validates the records before the idempotent ingestion job upserts one region, two states, seven metro contexts, and nine markets into PostgreSQL/PostGIS.
 
-The React interface renders pockets directly, keeping metro as a filter and reporting dimension rather than a required navigation step.
+The same typed repository supports two modes:
 
-## Boundaries
+- default zero-configuration mode serves deterministic in-memory objects;
+- `DEMO_DATA_MODE=database` reads equivalent objects from PostgreSQL/PostGIS after migration and ingestion.
 
-- `data/public` contains curated public observations, source references, official ZCTA geometry, centroids, and display radii.
+The React interface renders markets directly. Metro remains a filter and reporting dimension rather than mandatory navigation.
+
+## Facility and opportunity boundaries
+
+Source/provider profile identity is separate from physical clinic identity. Synthetic tests demonstrate practitioner aliases resolving to one named canonical clinic while unrelated colocated practices remain separate. The curated competitor table contains physical strict general urgent-care facilities only.
+
+Standalone occupational medicine is modeled as a sanitized strategic opportunity type, not strict competition. Site traffic sits downstream as opportunity diligence and never contributes to Demo Expansion Score v2.
+
+## Repository boundaries
+
+- `data/public` contains curated public observations, public source references, official ZCTA geometry, and sanitized scenarios.
+- `lib/facilities` contains a conservative public-safe identity example with synthetic tests.
+- `lib/scoring` contains independently configured illustrative models.
 - `ingestion/demo` validates and persists deterministic public-demo records.
-- lib/scoring contains the public illustrative models.
-- lib/server isolates database access.
-- app/api is the typed HTTP boundary.
-- components contains presentation and interaction.
-- `reporting` demonstrates deterministic executive output from the curated public dataset.
+- `lib/server` isolates database access behind the same API shape used by preview mode.
+- `components` contains the four-tab decision UI.
+- `reporting` creates a deterministic public executive sample.
 
-## Production separation
-
-This design mirrors common platform boundaries without copying private source, Git history, database exports, provider responses, exact production weights, opportunity-search queries, or private targets.
+No private database export, source response, acquisition target, evidence excerpt, run identifier, scoring calibration, production weight, ranking, report payload, or credential is included.

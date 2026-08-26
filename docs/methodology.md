@@ -1,53 +1,48 @@
 # Demo Methodology
 
-## Important limitation
+## Public boundary
 
-The public demo combines real public observations with simplified illustrative scoring. It does not reproduce production components, weights, thresholds, normalization, or private opportunity evidence methodology.
+`demo_expansion_score_v2` mirrors the business concepts of the private production system but does not reproduce production normalization, weights, thresholds, rankings, facility data, targets, evidence, or acquisition logic. Every displayed input is labeled as `real_public_observation`, `derived_public_observation`, or `illustrative_demo_value`.
 
-Official Census ZCTA geometry is retained for public-source lineage, demographic extraction, ZIP routing, and reproducibility. The primary map deliberately renders five-mile circular overlays centered on each canonical ZCTA centroid. These circles are curated market analysis areas, not literal ZIP boundaries, and do not alter any metric or score.
+The historical `demo_expansion_score_v1` identifier and configuration remain versioned in code. Demo v2 is a separate public model.
 
-## Demo Expansion Score
+## Five pillars and eight components
 
-Model identifier: demo_expansion_score_v1.
+| Pillar | Component | Demo weight | Raw input | Direction | Provenance |
+| --- | --- | ---: | --- | --- | --- |
+| Market Demand | Population | 15% | 2024 ACS population | Higher favorable | Real public |
+| Market Demand | Population Growth | 20% | 2019-to-2024 ACS change | Higher favorable | Derived public |
+| Competitive Landscape | Competitors / 10k Population | 20% | Canonical physical strict facilities / population | Lower favorable | Derived public |
+| Competitive Landscape | Competitor Strength | 10% | Simplified rating and log-review concept | Lower favorable | Illustrative demo |
+| Competitive Landscape | Competitive Availability Gap | 10% | Standard-hour coverage concept | Higher favorable | Illustrative demo |
+| Clinical Workforce | Clinical Workforce Growth | 5% | Simplified workforce trend | Higher favorable | Illustrative demo |
+| Occupational Medicine | Occupational Medicine Potential | 10% | Industrial/logistics employment-share concept | Higher favorable | Illustrative demo |
+| Healthcare Access Gap | Primary-Care Underserved | 10% | ACS uninsured-share access proxy | Higher favorable | Derived public |
 
-Five normalized 0-100 components are combined using public illustrative weights:
+The weights total 100% and are intentionally simple public-demo weights. They are not production weights.
 
-| Component | Weight | Raw input | Direction |
-| --- | ---: | --- | --- |
-| Population / Demand | 25% | 2024 ACS population | Higher is favorable |
-| Population Growth | 20% | 2019-to-2024 ACS change | Higher is favorable |
-| Competitive Saturation | 25% | Curated competitors per 10,000 | Lower is favorable |
-| Healthcare Access Gap | 15% | ACS uninsured share | Higher gap is favorable |
-| Employment / Activity | 15% | ACS employed share, population 16+ | Higher is favorable |
+## Normalization and missing values
 
-Raw values are min-max normalized across the fixed nine-market public comparison universe. Missing values are not silently converted to zero. These comparison mechanics do not reproduce production normalization.
+Each raw value is min-max normalized across the fixed nine-market curated universe. Lower-is-better directionality is applied to competitors per 10,000 and competitor strength. The other components are higher-is-better.
 
-## Competitor saturation
+Missing components are excluded and the available weight is transparently renormalized. Eight of eight is `complete`; a usable subset is `partial`; less than 40% of configured weight is `insufficient_data`. Missing values are not silently assigned zero.
 
-The raw KPI is curated competitors per 10,000 ACS residents. Its demo normalized value handles lower-is-better directionality. The public competitor snapshot is deliberately small and is not represented as an exhaustive market census.
+## Physical facility identity
 
-| Normalized score | Display |
-| ---: | --- |
-| 80-100 | ++ |
-| 60 to less than 80 | + |
-| 40 to less than 60 | ○ |
-| 20 to less than 40 | - |
-| 0 to less than 20 | -- |
+The competitor layer represents physical general urgent-care facilities, not source profiles. A practitioner profile may resolve to a named clinic when the profile explicitly names that facility and shares its address. An explicit canonical clinic record wins. Address alone never causes two unrelated clinics to merge. Original aliases remain available for lineage.
 
-## Public and illustrative opportunity paths
+Strict competitors require credible general urgent-access identity such as urgent care, walk-in, immediate care, express care, same-day care, or retail clinic. Plain primary care, family medicine, specialty-only facilities, and occupational-health-only centers are excluded unless explicit general urgent-access service is present.
 
-| Path | Public-demo status |
-| --- | --- |
-| Listed acquisition | Linked factual public listing snapshot |
-| Off-market target | Sanitized illustrative case study |
-| Real estate / de novo | Illustrative scenario unless linked to a public listing |
+## Opportunities and entry feasibility
 
-Hoffman Estates contains concise facts from a linked public listing, last verified August 25, 2026. Royersford contains a sanitized off-market case that does not identify a private operator. Real-estate paths are illustrative unless explicitly linked to an active public source. Demo path scores are not predictions of seller intent.
+The public demo separates listed acquisitions, sanitized urgent-care acquisition targets, sanitized occupational-medicine targets, and real-estate paths. The occupational-medicine example is synthetic and never contributes to competitor saturation.
 
-## Entry Feasibility
+Demo Entry Feasibility uses the strongest represented path plus small breadth bonuses. Demo Near-Term Priority v2 is the geometric mean of Demo Expansion Score v2 and Entry Feasibility. These transparent formulas demonstrate product behavior and do not reproduce private Target Priority, Approachability, or production opportunity scoring.
 
-Possible paths are listed acquisition, illustrative off-market target, and real estate. The strongest path provides the base score, with small bonuses for a second and third viable path. Missing paths do not penalize a strong path.
+## Site diligence
 
-## Near-Term Expansion Priority
+Market screening and site diligence are separate. Site traffic is displayed only with an opportunity. No market centroid is substituted for an undisclosed site, and no traffic value is invented to fill a card. The current public listing and sanitized scenarios therefore show `Precise location unavailable` unless a defensible public site and official traffic source are present.
 
-Near-Term Expansion Priority is the geometric mean of Demo Expansion Score and Demo Entry Feasibility. This simple public formula penalizes a serious weakness in either dimension and does not reproduce the production combination methodology.
+## Geography
+
+Official Census ZCTA geometry is retained for public-source lineage, demographic extraction, ZIP routing, and reproducibility. The primary map uses five-mile circles centered on canonical ZCTA centroids as explicit demo analysis areas, not literal ZIP boundaries.

@@ -10,7 +10,11 @@
     "test": "vitest run",
     "db:migrate": "tsx db/migrate.ts",
     "db:check": "tsx db/check.ts",
-    "ingest:demo": "tsx ingestion/demo/ingest.ts"
+    "ingest:demo": "tsx ingestion/demo/ingest.ts",
+    "report:data": "tsx reporting/export-public-data.ts",
+    "report:demo": "npm run report:data && python reporting/generate_demo_report.py",
+    "test:reporting": "python -m unittest discover reporting/tests",
+    "check:modes": "tsx scripts/check-mode-parity.ts"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
